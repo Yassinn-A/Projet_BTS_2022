@@ -24,10 +24,9 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-    bombardement *detecteur=new bombardement(24);
-    if(detecteur->detection()==true){
-        cout<<"Detection d'un rayon infrarouge"<<endl;
-    }
+    bombardement *detecteur=new bombardement();
+    while(1==1){
+    detecteur->start();}
     delete detecteur;
     return 0;
 }

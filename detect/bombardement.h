@@ -15,15 +15,14 @@
 #define BOMBARDEMENT_H
 #include "/home/snir2g1/NetBeansProjects/cppGPIO/include/cppgpio/buttons.hpp"
 
-class bombardement :public GPIO::Switch{
+class bombardement :public GPIO::InputDetect{
 public:
-    bombardement(int addr);
+    bombardement();
     virtual ~bombardement();
-    bool detection();
+    void triggered(unsigned int gpio);
 private:
     
     bool detected;
-    int gpio;
 };
 
 #endif /* BOMBARDEMENT_H */

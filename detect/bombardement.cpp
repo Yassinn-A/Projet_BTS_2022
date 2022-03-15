@@ -12,24 +12,18 @@
  */
 
 #include "bombardement.h"
+#include <iostream>
+using namespace std;
 
-bombardement::bombardement(int addr):Switch(addr,GPIO::GPIO_PULL::OFF){
+bombardement::bombardement():InputDetect({24},GPIO::GPIO_EDGE::BOTH){
     detected= false;
-    gpio=addr; 
 }
 
 bombardement::~bombardement() {
 }
 
-bool bombardement::detection(){
-    Switch capteurIR(gpio, GPIO::GPIO_PULL::OFF);
-    capteurIR.start();
-    for(;;){
-        bool new_detect=capteurIR.is_on();
-        if(new_detect != detected){
-            detected = new_detect;
-            return true;
-        }
-    }
+
+void bombardement:: triggered(unsigned int gpio){
+    cout<<"Test"<<endl;
 }
 
