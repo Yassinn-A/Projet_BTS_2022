@@ -120,3 +120,21 @@ int I2C::ecrire(char avaleur) {
     fermerAcces(cheminAcces);
     return -1;
 }
+int I2C::ecrireNbr(int nbrRegistre,char avaleur){
+    //**************************
+    if(nbrRegistre==1){
+        ecrire();
+    }
+    //**************************
+    if(nbrRegistre==2){
+        ecrire(avaleur)
+    }
+    //**************************
+    if(nbrRegistre==3){
+        
+    }
+    //**************************
+    if(nbrRegistre==4){
+        
+    }
+}
