@@ -40,9 +40,10 @@ public:
     void setAddrRegistre(unsigned char reg);
     int ecrire();
     char* lire();
-	char lire1();
-	int ecrire(char avaleur);
-	int ecrireNbr(int nbrRegistre,char avaleur);
+    char lire1();
+    char lireNbr(int nbrRegistre);
+    int ecrire(char avaleur);
+    int ecrireNbr(int nbrRegistre,char avaleur);
 protected:
     int ouvrirAcces();
     void configurerAddrEsclave(int chemin);
