@@ -42,7 +42,7 @@ public:
     char* lire();
 	char lire1();
 	int ecrire(char avaleur);
-	int ecrireNbr(int nbrRegistre,char registre);
+	int ecrireNbr(int nbrRegistre,char avaleur);
 protected:
     int ouvrirAcces();
     void configurerAddrEsclave(int chemin);
