@@ -41,7 +41,7 @@ public:
     int ecrire();
     char* lire();
     char lire1();
-    char lireNbr(int nbrRegistre);
+    char* lireNbr(int nbrRegistre);
     int ecrire(char avaleur);
     int ecrireNbr(int nbrRegistre,char avaleur);
 protected:
