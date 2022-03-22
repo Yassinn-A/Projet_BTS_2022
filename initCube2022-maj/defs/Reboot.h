@@ -29,6 +29,7 @@ public:
     void setNumber(int anumber);
 	void resetStatus();
     void systemeReboot();
+	void rebootSolaire();
 private:
     string dateHour;
     int number;
