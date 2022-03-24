@@ -167,17 +167,29 @@ int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
     }
 }
 
-char* I2C::lireNbr(int nbrRegistre){
+char* I2C::lireNbr(int nbrRegistre,char addrRead){
 
     //*****************************
     if(nbrRegistre==2){
-        lire();
+        int cheminAcces = ouvrirAcces();
+        configurerAddrEsclave(cheminAcces);
+        int ret = read(cheminAcces, addrRead, 2);
+        if (ret <= 0) {
+            openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+            syslog(LOG_ERR, "%d read", ret);
+            closelog();
+            fermerAcces(cheminAcces);
+        } else {
+            fermerAcces(cheminAcces);
+            return valeur;
+        }
+        return NULL;
     }
     //*****************************
     if(nbrRegistre==3){
         int cheminAcces = ouvrirAcces();
         configurerAddrEsclave(cheminAcces);
-        int ret = read(cheminAcces, valeur, 3);
+        int ret = read(cheminAcces, addrRead, 3);
         if (ret <= 0) {
             openlog("I2C : ", LOG_PID, LOG_LOCAL0);
             syslog(LOG_ERR, "%d read", ret);
