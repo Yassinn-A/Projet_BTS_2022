@@ -23,22 +23,26 @@ PowerControler::~PowerControler() {
 }
 
 void PowerControler::securedReboot(){
+    unsigned char buf[4];
     setAddrEsclave(0x14);
     //Ligne 1 : trame 1
     setAddrRegistre(0xC2);
     ecrireNbr(1,0,0,0);
-    lireNbr(3);
+    buf[0] =0xC2 ;
+    lireNbr(3,buf);
     //Ligne 1 : trame 2
     ecrireNbr(4,0x25,0x01,0xDB);
     //Ligne 1 : trame 3
     ecrireNbr(1,0,0,0);
-    lireNbr(3);
+    buf[0] =0xC2 ;
+    lireNbr(3,buf);
     //Ligne 2 : trame 1
     setAddrRegistre(0x63);
     ecrireNbr(3,0x00,0xFF,0);
     //Ligne 2 : trame 2
     ecrireNbr(1,0,0,0);
-    lireNbr(2);
+    buf[0] =0x63 ;
+    lireNbr(2,buf);
     //Ligne 3
     setAddrRegistre(0x64);
     ecrireNbr(3,0x00,0xFF,0);
