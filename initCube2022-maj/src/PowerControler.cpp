@@ -11,7 +11,7 @@
  * Created on 22 mars 2022, 16:14
  */
 
-#include "PowerControler.h"
+#include "../defs/PowerControler.h"
 #include <iostream>
 using namespace std;
 
@@ -23,7 +23,7 @@ PowerControler::~PowerControler() {
 }
 
 void PowerControler::securedReboot(){
-    unsigned char buf[4];
+    char buf[4];
     setAddrEsclave(0x14);
     //Ligne 1 : trame 1
     setAddrRegistre(0xC2);

@@ -6,7 +6,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-	list<string> appareils;
+    list<string> appareils;
     SegmentVol* segmentVol = new SegmentVol();
     segmentVol->setIdentifiant(1);
     SegmentSol* monSeg = new SegmentSol(segmentVol);
@@ -19,5 +19,5 @@ int main(int argc, char** argv) {
     t1.join();
 		t2.join();
     t3.join();
-    return 0;
+
 }
