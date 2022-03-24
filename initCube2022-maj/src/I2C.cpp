@@ -167,7 +167,7 @@ int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
     }
 }
 
-char* I2C::lireNbr(int nbrRegistre,char addrRead){
+char* I2C::lireNbr(int nbrRegistre,unsigned char addrRead){
 
     //*****************************
     if(nbrRegistre==2){
