@@ -120,7 +120,7 @@ int I2C::ecrire(char avaleur) {
     fermerAcces(cheminAcces);
     return -1;
 }
-int I2C::ecrireNbr(int nbrRegistre,char avaleur){
+int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
     //**************************
     if(nbrRegistre==1){
         ecrire();
@@ -132,7 +132,7 @@ int I2C::ecrireNbr(int nbrRegistre,char avaleur){
     //**************************
     if(nbrRegistre==3){
         int cheminAcces = ouvrirAcces();
-        char configuration[3] = {addrRegistre, avaleur};
+        char configuration[3] = {addrRegistre, avaleur, avaleur2};
         int ret = 1;
         configurerAddrEsclave(cheminAcces);
         ret = write(cheminAcces, configuration, 3);
@@ -150,7 +150,7 @@ int I2C::ecrireNbr(int nbrRegistre,char avaleur){
     //**************************
     if(nbrRegistre==4){
         int cheminAcces = ouvrirAcces();
-        char configuration[4] = {addrRegistre, avaleur};
+        char configuration[4] = {addrRegistre, avaleur, avaleur2, avaleur3};
         int ret = 1;
         configurerAddrEsclave(cheminAcces);
         ret = write(cheminAcces, configuration, 4);
