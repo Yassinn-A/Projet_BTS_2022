@@ -36,7 +36,7 @@ public:
     void activerReception();
     thread tActiverReception();
     void traiterCommande();
-    thread tTraiterCommande();
+
     thread tTraiter_cmd_queue();
     void testEnvoie();
     thread tTestEnvoie();
