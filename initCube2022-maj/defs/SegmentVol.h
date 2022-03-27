@@ -67,7 +67,7 @@ public:
     void setSegmentSol(SegmentSol* segmentSol) {
         this->segmentSol = segmentSol;
     }
-    void configurerRecupEtat(short period, list<string> instrument);
+    void configurerRecupEtat(short period, list<string> appareils);
     thread recupEtat();
     thread tLancerMission();
     thread tArretMission();
