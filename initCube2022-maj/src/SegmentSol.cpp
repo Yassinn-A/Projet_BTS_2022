@@ -245,21 +245,49 @@ void SegmentSol::traiterCommande() {
     //Traitement des commandes
 
     if (commande->getCode() == TypeCommande::MISSION) {
-        list<string> typeMission = commande->getParametres();
 
-                vector<string> vector_string;
-                   for (auto list : typeMission) {
-                        vector_string.push_back(list); //vector_string.at(5) = duree ,vector_string.at(6) = type ;
-                        }
-                        string duree = vector_string.at(3); //duree
-                        string periode = vector_string.at(1); //période
-                        int int_1 = stoi(duree);
-                        int int_2 = stoi(periode);
+		list<string> mission = commande->getParametres();
+                //VETUDIANT
+		        //list<string> typeMission = commande->getParametres();
+				//vector<string> vector_string;
+                //   for (auto list : typeMission) {
+                //        vector_string.push_back(list); //vector_string.at(5) = duree ,vector_string.at(6) = type ;
+                //        }
+                //        string duree = vector_string.at(3); //duree
+                //        string periode = vector_string.at(1); //période
+                //        int int_1 = stoi(duree);
+                //        int int_2 = stoi(periode);
 
-                        (short)int_1 ;
-                        (short)int_2 ;
+                //        (short)int_1 ;
+                //        (short)int_2 ;
 
-                leSegment->creerMission(int_1,int_2,vector_string.at(5),vector_string.at(6)) ;
+                //leSegment->creerMission(int_1,int_2,vector_string.at(5),vector_string.at(6)) ;
+				short periodicity=0; ///////////////////////////
+				short duration=0; ///////////////////////////
+				string startTime=""; ///////////////////////////
+				string measureType=""; ///////////////////////////
+				list<string>::iterator itMission = mission.begin(); ///////////////////////////
+				istringstream iss; ///////////////////////////
+
+				for (itMission = mission.begin();itMission != mission.end();itMission++)
+				{
+					if ((*itMission) == TypeMisEtat::PERIOD) {
+						iss = istringstream( *(++itMission) );
+							iss >> periodicity;
+	
+					}
+					else if ((*itMission) == TypeMisEtat::DURATION) {
+						iss = istringstream( *(++itMission) );
+						iss >> duration;
+					}
+					else if ((*itMission) == TypeMisEtat::DATETIME) {
+									startTime = *(++itMission);
+								}
+					else measureType = *(itMission);
+				}
+
+				leSegment->creerMission(periodicity, duration, startTime, measureType); //(short periode, short duree, string debut, string type)
+
                 thread lMission = leSegment->tLancerMission();
                 lMission.detach();
 
@@ -352,12 +380,6 @@ void SegmentSol::traiterCommande() {
 	}
 }
 
-thread SegmentSol::tTraiterCommande() {
-    return thread([this] {
-        detramerCommande();
-        traiterCommande();
-    });
-}
 
 thread SegmentSol::tTraiter_cmd_queue() {
     return thread([this] {
