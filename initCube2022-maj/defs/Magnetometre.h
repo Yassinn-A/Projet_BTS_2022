@@ -26,6 +26,8 @@ public:
     void desactiver();
     void PassThrough();
 	void getChamp(short champ [3]);
+	int faireMesure(char arg = -1); ////////
+    float* obtenirMesure();////////////
 private:
     Mode mode;
     float TempInst;
