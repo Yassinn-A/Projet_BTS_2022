@@ -13,17 +13,23 @@
 
 #ifndef POWERCONTROLER_H
 #define POWERCONTROLER_H
-#include "../include/cppgpio/buttons.hpp"
 #include "./I2C.h"
+#include "./DetecteurParticules.h"
 
-class PowerControler :public GPIO::InputDetect,public I2C{
+class PowerControler :public I2C{
 public:
     PowerControler();
-    virtual ~PowerControler();
-    void triggered(unsigned int gpio);
+    virtual ~PowerControler();    
     void securedReboot();
+    DetecteurParticules* getDetecteurParticules(){ return detecteurParticules; }
+    void setDetecteurParticules(DetecteurParticules* detecteurParticules){this->detecteurParticules = detecteurParticules;}
 private:
-
+    DetecteurParticules* detecteurParticules;
+protected:
+    void setWakeupEnabled();
+    void setWakeupOnChargeOff();
+    void setSystemPowerSwitchOff();
+    void setPowerOff();
 };
 
 #endif /* POWERCONTROLER_H */
