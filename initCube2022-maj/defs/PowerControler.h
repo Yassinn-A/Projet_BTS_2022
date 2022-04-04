@@ -15,7 +15,7 @@
 #define POWERCONTROLER_H
 #include "./I2C.h"
 #include "./DetecteurParticules.h"
-
+class DetecteurParticules;
 class PowerControler :public I2C{
 public:
     PowerControler();
