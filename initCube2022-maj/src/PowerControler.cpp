@@ -15,7 +15,7 @@
 #include <iostream>
 using namespace std;
 
-PowerControler::PowerControler(){
+PowerControler::PowerControler():I2C(){
 }
 PowerControler::~PowerControler() {
 }
