@@ -13,7 +13,7 @@
 
 #include "../defs/DetecteurParticules.h"
 
-DetecteurParticules::DetecteurParticules():InputDetect({24},GPIO::GPIO_EDGE::BOTH),I2C() {
+DetecteurParticules::DetecteurParticules():InputDetect({24},GPIO::GPIO_EDGE::BOTH){
     detected =false;
 }
 
@@ -22,5 +22,5 @@ DetecteurParticules::~DetecteurParticules() {
 }
 
 void DetecteurParticules:: triggered(unsigned int gpio){
-    securedReboot();
+    powerControler ->securedReboot();
 }
