@@ -89,7 +89,6 @@ public:
     int intialisationInstrument();
 	int resetStatus(list<string> appareil);
     Sauvegarde* getSave();
-    Reboot* getReboot();
 
 
 private:
@@ -107,7 +106,6 @@ private:
 	Sauvegarde* sauvegarde;
     Etat* etat;
     PowerControler* powerControler;
-    Reboot* reboot;
     bool etatThread;
 };
 
