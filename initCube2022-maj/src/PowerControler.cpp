@@ -20,7 +20,7 @@ PowerControler::PowerControler():I2C(){
 PowerControler::~PowerControler() {
 }
 
-void PowerControler::securedReboot(){   
+void PowerControler::securedReboot(){
     setAddrEsclave(0x14);
     setWakeupEnabled();
     setWakeupOnChargeOff();
@@ -28,6 +28,7 @@ void PowerControler::securedReboot(){
     setPowerOff();
     system("sudo shutdown -h now");  
 }
+
 
 void PowerControler::setWakeupEnabled(){
     char buf[4];

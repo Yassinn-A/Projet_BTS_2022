@@ -15,7 +15,6 @@
 
 DetecteurParticules::DetecteurParticules():InputDetect({24},GPIO::GPIO_EDGE::BOTH){
     detected =false;
-    powerControler = new PowerControler();
 }
 
 
@@ -23,5 +22,6 @@ DetecteurParticules::~DetecteurParticules() {
 }
 
 void DetecteurParticules:: triggered(unsigned int gpio){
-    powerControler ->securedReboot();
+    rebootSave();
+    leSegment->getPowerControler()->securedReboot();
 }

@@ -15,8 +15,21 @@ SegmentVol::SegmentVol() {
     segmentSol = new SegmentSol(this);
     surveillance = new Surveillance(this);
     sauvegarde = new Sauvegarde();
-	this->identifiant = sauvegarde->lireID();
+    powerControler = new PowerControler();
+    reboot = new Reboot();
     this->intialisationInstrument();
+}
+
+Sauvegarde* SegmentVol::getSave(){
+    return sauvegarde;
+}
+
+PowerControler* SegmentVol:: getPowerControler(){
+    return powerControler;
+}
+
+Reboot* SegmentVol::getReboot(){
+    return reboot;
 }
 
 SegmentVol::~SegmentVol() {
@@ -153,6 +166,7 @@ void SegmentVol::obtenirStatus(list<string> appareil) {
     list<string>::iterator it;
     horloge->lire();
 		list<string>::iterator it2;
+
 	if (appareil.begin() == appareil.end()) {
         ordinateur->obtenirStatus();
         instrument->obtenirStatus();
@@ -259,8 +273,8 @@ void SegmentVol::desactiverModuleEmission() {
     emetteurRecepteur->desativerEmetteur();
 }
 
-void SegmentVol::configurerRecupEtat(short period, list<string> appareils) {
-    etat->setAppareil(appareils);
+void SegmentVol::configurerRecupEtat(short period, list<string> instrument) {
+    etat->setAppareil(instrument);
     etat->setPeriodicity(period);
 }
 
@@ -314,7 +328,7 @@ void SegmentVol::setIdentifiant(unsigned char id) {
 int SegmentVol::intialisationInstrument() {
 
 
-   stringstream ss;
+    stringstream ss;
 
 
     vector<int>adrI2C(0);
@@ -327,21 +341,17 @@ int SegmentVol::intialisationInstrument() {
 
     //lecture des adresse I2C
     int N = open("/dev/i2c-1", O_RDWR);
-	int err;
+
     for (int i = 0x00; i <= 0x77; i++) {
-        err = ioctl(N, I2C_SLAVE, i);
+        ioctl(N, I2C_SLAVE, i);
+
         if (write(N, "", 1) == 1) {
             switch (i) {
-                case 0x18: 
-					break;
-                case 0x04: 
-					break;
-                case 0x14: 
-					break;
-                case 0x68: 
-					break;
-                default: 
-					adrI2C.push_back(i);
+                case 0x18: break;
+                case 0x04: break;
+                case 0x14: break;
+                case 0x68: break;
+                default: adrI2C.push_back(i);
 
 
                     break;
@@ -367,61 +377,60 @@ int SegmentVol::intialisationInstrument() {
     ss >> hex>>iAdrConfig;
 
     //Comparaison des adresses
-	if (!adrI2C.empty())
-	{
-		   if(*itAdrI2C == adrI2C.back()){
-   			adrInstrument = *itAdrI2C;
-		   }
-			else{
-			while (*itAdrI2C != adrI2C.back()) {
-				if (*itAdrI2C != iAdrConfig) {
-					advance(itAdrI2C, 1);
 
-				} else {
-					adrInstrument = *itAdrI2C;
-					   }
+   if(*itAdrI2C == adrI2C.back()){
+   	adrInstrument = *itAdrI2C;
+   }
 
-    				}
-	 			}
-			switch (adrInstrument) {
-				case 0: return -1;
-				case 0x69:
-				  /*         Magnetometre* magneto = new Magnetometre();
-						   magneto->PassThrough();
-						   delete magneto;
+    else{
+    while (*itAdrI2C != adrI2C.back()) {
+        if (*itAdrI2C != iAdrConfig) {
+            advance(itAdrI2C, 1);
 
-						   int I2C = open("/dev/i2c-1", O_RDWR);
-						   ioctl(I2C, I2C_SLAVE, 0x0C);
-						   if (write(I2C, "", 1) == 1) {
-							   adrInstrument = 0x0C;
-							   if (typeConfig != "magnetometre") {
-								   return -1;
-							   }
-							   //instrument = new Magnetometre();
-						   }
-						   close(I2C);
-					  if (typeConfig != "camera infrarouge") {
-						return -1;
+        } else {
+            adrInstrument = *itAdrI2C;
+               }
 
-					}*/
+    		}
+	 	}
+    switch (adrInstrument) {
+        case 0: return -1;
+        case 0x69:
+          /*         Magnetometre* magneto = new Magnetometre();
+                   magneto->PassThrough();
+                   delete magneto;
 
-					instrument = new CameraIR();
+                   int I2C = open("/dev/i2c-1", O_RDWR);
+                   ioctl(I2C, I2C_SLAVE, 0x0C);
+                   if (write(I2C, "", 1) == 1) {
+                       adrInstrument = 0x0C;
+                       if (typeConfig != "magnetometre") {
+                           return -1;
+                       }
+                       //instrument = new Magnetometre();
+                   }
+                   close(I2C);
+              if (typeConfig != "camera infrarouge") {
+                return -1;
 
-					break;
+            }*/
 
-					/*  case 0x30:
-						   if (typeConfig != "camera photo") {
-							   return -1;
-						   }
-						   instrument = new CameraPhoto();
-						   break;
-					 */
+            instrument = new CameraIR();
 
-			}
+            break;
+
+            /*  case 0x30:
+                   if (typeConfig != "camera photo") {
+                       return -1;
+                   }
+                   instrument = new CameraPhoto();
+                   break;
+             */
+
+    }
 
 
-	}
-	else segmentSol->envoyerInfos("ERROR-E21");
+
 
     return 0;
 }

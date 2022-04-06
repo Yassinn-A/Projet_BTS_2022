@@ -56,7 +56,6 @@ string Stockage::trouverPositionUSD(string str){
 void Stockage::calculMemoireUSD(){
     FILE * fichierU = ouvrirAccesUSD();
     string ligneU = lectureLigneUSD(fichierU);
-	int status = pclose(fichierU);
     string memoirelibreUSD = trouverPositionUSD(ligneU);           
     int ndestringe = 0;
     string strUSD;
@@ -120,7 +119,6 @@ string Stockage::trouverPositionRAM(string str){
 void Stockage::calculMemoireRAM(){
     FILE * fichierR = ouvrirAccesRAM();
     string ligneR = lectureLigneRAM(fichierR);
-	int status = pclose(fichierR);
     string memoirelibreRAM = trouverPositionRAM(ligneR);
     
     int ndestring = 0;

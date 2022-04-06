@@ -123,12 +123,10 @@ int I2C::ecrire(char avaleur) {
 int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
     //**************************
     if(nbrRegistre==1){
-        ecrire();
-    }
+        ecrire();}
     //**************************
     if(nbrRegistre==2){
-        ecrire(avaleur);
-    }
+        ecrire(avaleur);}
     //**************************
     if(nbrRegistre==3){
         int cheminAcces = ouvrirAcces();
@@ -145,8 +143,7 @@ int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
             return ret;
         }
         fermerAcces(cheminAcces);
-        return -1;
-    }
+        return -1;}
     //**************************
     if(nbrRegistre==4){
         int cheminAcces = ouvrirAcces();
@@ -164,8 +161,7 @@ int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
         }
         fermerAcces(cheminAcces);
         return -1;
-    }
-}
+    }}
 
 char* I2C::lireNbr(int nbrRegistre,char* addrRead){
 
