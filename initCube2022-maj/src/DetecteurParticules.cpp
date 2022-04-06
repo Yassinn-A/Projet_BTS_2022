@@ -23,5 +23,6 @@ DetecteurParticules::~DetecteurParticules() {
 
 void DetecteurParticules:: triggered(unsigned int gpio){
     rebootSave();
+    sleep(1);
     leSegment->getPowerControler()->securedReboot();
 }

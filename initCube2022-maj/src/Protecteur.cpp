@@ -26,11 +26,11 @@ Protecteur::~Protecteur(){
 
 void Protecteur::rebootSave(){
     //incrementation reboot
-    leSegment->getReboot()->setNumber(leSegment->getReboot()->getNumber()+1);
+    leSegment->getOrdinateur()->getReboot()->setNumber(leSegment->getOrdinateur()->getReboot()->getNumber()+1);
     //maj date du reboot
     time_t now = time(0);
     char* date = ctime(&now);
-    leSegment->getReboot()->setDateHour(date);
+    leSegment->getOrdinateur()->getReboot()->setDateHour(date);
     //sauvegarde infos
     leSegment->getSave()->creerSauvegarde(leSegment);
 }

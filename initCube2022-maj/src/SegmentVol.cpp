@@ -16,7 +16,6 @@ SegmentVol::SegmentVol() {
     surveillance = new Surveillance(this);
     sauvegarde = new Sauvegarde();
     powerControler = new PowerControler();
-    reboot = new Reboot();
     this->intialisationInstrument();
 }
 
@@ -28,9 +27,6 @@ PowerControler* SegmentVol:: getPowerControler(){
     return powerControler;
 }
 
-Reboot* SegmentVol::getReboot(){
-    return reboot;
-}
 
 SegmentVol::~SegmentVol() {
 }
