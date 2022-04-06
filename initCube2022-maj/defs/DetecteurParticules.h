@@ -14,20 +14,15 @@
 #ifndef DETECTEURPARTICULES_H
 #define DETECTEURPARTICULES_H
 #include "../include/cppgpio/buttons.hpp"
-#include "./PowerControler.h"
+#include "./Protecteur.h"
 
-class PowerControler;
-
-class DetecteurParticules : public GPIO::InputDetect{
+class DetecteurParticules : public Protecteur, GPIO::InputDetect{
 public:
     DetecteurParticules();
     virtual ~DetecteurParticules();
     void triggered(unsigned int gpio);
-    PowerControler* getPowerControler(){ return powerControler; }
-    void setPowerControler(PowerControler* powercontroler){ this->powerControler = powercontroler; }
 private:
     bool detected;
-    PowerControler * powerControler;
 };
 
 #endif /* DETECTEURPARTICULES_H */

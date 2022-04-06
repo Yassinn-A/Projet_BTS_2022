@@ -35,6 +35,7 @@
 #include "Reboot.h"
 #include "Surveillance.h"
 #include "Sauvegarde.h"
+#include "PowerControler.h"
 #include "tinyxml2.h"
 #include <sstream>
 #include "Magnetometre.h"
@@ -42,13 +43,13 @@
 #include <ctime>
 #include <ratio>
 #include <chrono>
-#include <sstream>
+#include "Protecteur.h"
 using namespace tinyxml2;
 using namespace std;
 
 class SegmentSol;
 class Surveillance;
-
+class Protecteur;
 class SegmentVol {
 public:
     SegmentVol();
@@ -67,7 +68,7 @@ public:
     void setSegmentSol(SegmentSol* segmentSol) {
         this->segmentSol = segmentSol;
     }
-    void configurerRecupEtat(short period, list<string> appareils);
+    void configurerRecupEtat(short period, list<string> instrument);
     thread recupEtat();
     thread tLancerMission();
     thread tArretMission();
@@ -80,12 +81,15 @@ public:
     Mission* getMission();
     Ordinateur* getOrdinateur();
     Etat* getEtat();
+    PowerControler* getPowerControler();
     unsigned char getIdentifiant();
     void setIdentifiant(unsigned char id);
     void surveillerConstantes();
     void demandeManuelleReboot();
     int intialisationInstrument();
 	int resetStatus(list<string> appareil);
+    Sauvegarde* getSave();
+    Reboot* getReboot();
 
 
 private:
@@ -98,9 +102,12 @@ private:
     Mission* mission;
     Ordinateur* ordinateur;
     SegmentSol* segmentSol;
+    Protecteur* protecteur;
 	Surveillance * surveillance;
 	Sauvegarde* sauvegarde;
     Etat* etat;
+    PowerControler* powerControler;
+    Reboot* reboot;
     bool etatThread;
 };
 
