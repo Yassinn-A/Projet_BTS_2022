@@ -6,14 +6,24 @@
 #include "../defs/Reboot.h"
 #include "../defs/DetecteurParticules.h"
 #include "../defs/PowerControler.h"
+#include "../defs/pugixml.hpp"
+#include <sstream>
 
 using namespace std;
 
 
 
 int main(int argc, char** argv) {
-    DetecteurParticules* test = new DetecteurParticules();
-    test->start();
-    sleep(100);
+    pugi::xml_document doc;
+    if(doc.load_file("Save.xml")){
+        string res = "on";
+        pugi::xpath_node Secu=doc.select_node("//SegmentVol/Securite");  
+        string secuRead=Secu.node().attribute("particules_energie").value();
+        if(secuRead==res){
+            DetecteurParticules* test = new DetecteurParticules();
+            test->start();
+            sleep(100);
+        }
+    }
     return 0;
 }
