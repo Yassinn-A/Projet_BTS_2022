@@ -15,6 +15,7 @@
 
 DetecteurParticules::DetecteurParticules():InputDetect({24},GPIO::GPIO_EDGE::BOTH){
     detected =false;
+    
 }
 
 

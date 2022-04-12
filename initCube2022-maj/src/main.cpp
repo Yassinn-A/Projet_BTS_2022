@@ -9,7 +9,11 @@
 
 using namespace std;
 
+
+
 int main(int argc, char** argv) {
     DetecteurParticules* test = new DetecteurParticules();
-    test->triggered(24);
+    test->start();
+    sleep(100);
+    return 0;
 }

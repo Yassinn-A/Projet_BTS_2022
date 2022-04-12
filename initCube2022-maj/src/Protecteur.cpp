@@ -17,6 +17,7 @@
 using namespace std;
 
 Protecteur::Protecteur(){
+    
     leSegment = new SegmentVol();
 }
 

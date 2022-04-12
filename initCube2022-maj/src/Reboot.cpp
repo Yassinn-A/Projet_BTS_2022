@@ -21,15 +21,26 @@
 #include <sys/ioctl.h>
 using namespace std;
 
+
 Reboot::Reboot() {
     dateHour = "0000/00/00 00:00:00";
-    number = 0;
+    
+    pugi::xml_document doc;
+    if(doc.load_file("Save.xml")){
+        pugi::xpath_node Reboot=doc.select_node("//SegmentVol/Ordinateur_de_bord/Reboot");
+    
+    string numberRead=Reboot.node().attribute("number").value();
+    istringstream iss(numberRead);
+    iss>>number;
+    }
 }
 
 Reboot::Reboot(int anbreReboot, string adateHeure) {
     dateHour = adateHeure;
     number = anbreReboot;
 }
+
+
 
 Reboot::~Reboot() {
 

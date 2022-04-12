@@ -370,12 +370,15 @@ int SegmentVol::intialisationInstrument() {
     XMLText* typeNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("type")->FirstChild()->ToText();
     typeConfig = typeNode->Value();
     ss << adrConfig;
-    ss >> hex>>iAdrConfig;
+    ss >> hex>>iAdrConfig;   
+
 
     //Comparaison des adresses
-
+    //pb
    if(*itAdrI2C == adrI2C.back()){
-   	adrInstrument = *itAdrI2C;
+   	
+       adrInstrument = *itAdrI2C;
+        
    }
 
     else{
@@ -427,7 +430,7 @@ int SegmentVol::intialisationInstrument() {
 
 
 
-
+    
     return 0;
 }
 int SegmentVol::resetStatus(list<string> appareil)
