@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<SegmentVol>
+	<Charge_utile>
+		<Description id="09" type="..." role="..."/>
+        <Adresse I2C="x00"/>
+
+        <!--Configurer la charge utile-->
+        <Nombre_registre_config>3</Nombre_registre_config>
+        <Registre_adresse_valeur adresse_registre="x00" valeur_registre="XX"/>
+        <Registre_adresse_valeur adresse_registre="x00" valeur_registre="XX"/>
+        <Registre_adresse_valeur adresse_registre="x00" valeur_registre="XX"/>
+
+        <!--Recuperer les donnees-->
+        <Nombre_registre_donnee>2</Nombre_registre_donnee>
+        <Registre_donnee adresse_donnee="x00" valeur_donnee="XX"/>
+        <Registre_donnee adresse_donnee="x00" valeur_donnee="XX"/>
+
+        <Donnees conversion="Yes/No"/>
+
+	</Charge_utile>
+    <Securite mode_survie="on/off" particules_energie="on/off" />
+</SegmentVol>
