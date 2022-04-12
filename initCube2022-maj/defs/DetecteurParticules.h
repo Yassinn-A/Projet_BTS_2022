@@ -16,7 +16,7 @@
 #include "../include/cppgpio/buttons.hpp"
 #include "./Protecteur.h"
 
-class DetecteurParticules : public Protecteur, GPIO::InputDetect{
+class DetecteurParticules : public Protecteur, public GPIO::InputDetect{
 public:
     DetecteurParticules();
     virtual ~DetecteurParticules();

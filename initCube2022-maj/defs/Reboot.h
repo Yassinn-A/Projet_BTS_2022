@@ -15,6 +15,9 @@
 #define REBOOT_H
 
 #include <string>
+#include "pugixml.hpp"
+#include <list>
+#include <sstream>
 
 using namespace std;
 
