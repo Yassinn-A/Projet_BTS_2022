@@ -53,6 +53,7 @@ class Protecteur;
 class SegmentVol {
 public:
     SegmentVol();
+    SegmentVol(int reboot);
     virtual ~SegmentVol();
     void lancerMission();
     void arretMission();
