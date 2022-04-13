@@ -19,6 +19,22 @@ SegmentVol::SegmentVol() {
     this->intialisationInstrument();
 }
 
+SegmentVol::SegmentVol(int reboot) {//parametre utile pour differencier les deux contructeurs
+    horloge = new Horloge();
+    temperature = new Temperature();
+    batterie = new Batterie();
+    emetteurRecepteur = new EmetteurRecepteur();
+    mission = new Mission();
+    ordinateur = new Ordinateur();
+    etat = new Etat();
+    segmentSol = new SegmentSol(this);
+    surveillance = new Surveillance(this);
+    sauvegarde = new Sauvegarde();
+    powerControler = new PowerControler();
+    this->intialisationInstrument();
+    sauvegarde->chargerContexte(this);
+}
+
 Sauvegarde* SegmentVol::getSave(){
     return sauvegarde;
 }

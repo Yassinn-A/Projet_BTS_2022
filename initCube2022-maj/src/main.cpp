@@ -15,7 +15,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
     pugi::xml_document doc;
-    if(doc.load_file("Save.xml")){
+    if(doc.load_file("testxml.xml")){
         string res = "on";
         pugi::xpath_node Secu=doc.select_node("//SegmentVol/Securite");  
         string secuRead=Secu.node().attribute("particules_energie").value();
