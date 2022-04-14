@@ -42,14 +42,14 @@ void Soleil::luminosity(){
         ioctl(fd, I2C_SLAVE, address);//appel d'entrées/sorties
         write(fd, &addrRegistre1, 1);//écrire addrRegistre taille 1 char
         int ret1 = read(fd, valeur1, 2);//lire valeur taille 2 char
-        sleep(1);
+        sleep(1);//pause pour eviter de fausser le relevé
         write(fd, &addrRegistre2, 1);//écrire addrRegistre taille 1 char
         int ret2 = read(fd, valeur2, 2);//lire valeur taille 2 char
         int res1,res2;
         res1=((int)valeur1[1]<<8)+((int)valeur1[0]);
         res2=((int)valeur2[1]<<8)+((int)valeur2[0]);
-        res1= (res1*6000)/4095;
-        res2= (res2*6000)/4095;
+        res1= (res1*6000)/4095;//conversion en lux
+        res2= (res2*6000)/4095;//conversion en lux
         cout<<"Nbre valeurs lues = "<<ret1<<endl;//affiche Nbre valeurs lues
         cout<<"Nbre valeurs lues = "<<ret2<<endl;//affiche Nbre valeurs lues
         cout<<"Valeur lue = "<<res1<<" lux"<<endl;//affiche Valeur lue de la premiere case du tableau et la deuxieme case du tableau
