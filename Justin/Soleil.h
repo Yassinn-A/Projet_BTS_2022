@@ -32,7 +32,8 @@ class Soleil {
 public:
     Soleil();
     virtual ~Soleil();
-    void luminosity();
+    int luminosity1();
+    int luminosity2();
 private:
 
 };
