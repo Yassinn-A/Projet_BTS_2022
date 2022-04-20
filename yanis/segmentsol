@@ -1,0 +1,84 @@
+#include <cstdlib>
+#include <iostream>
+#include "./defs/serialib.h"
+#include "defs/Image.hpp"
+#define JPEG_BUF_SIZE 320*240
+#include <iostream>
+#include<string>
+#include<sstream>
+
+using namespace std;
+
+/*
+ * 
+ */
+int main() {
+    serialib toto;
+    char bufferRcpt[128];
+    char monTableau[JPEG_BUF_SIZE];
+
+    int retour = toto.Open("/dev/ttyUSB0", 9600);
+    int taille = toto.ReadString(bufferRcpt, 255, 100);
+   
+    string laTrame = string (bufferRcpt,bufferRcpt[1]);
+    cout <<laTrame<<endl;
+    std::size_t found = laTrame.find(" "); //va servir a trouver le premier espace
+    cout <<found<< " indice du premier espace " <<endl;
+    size_t position_deuxieme = laTrame.find (" ", 13 + 1); // position_deuxieme correspond a l'endroit 
+    cout <<position_deuxieme<< " indice du deuxieme espace " <<endl;
+    string nbOctetImage =  laTrame.substr (13, position_deuxieme - 13); // c'est la position entre la case 13 et la prochaine position 
+    cout <<nbOctetImage<< " nombre d'octets de l'image dans la trame " <<endl;
+    
+    cout << taille<< " taille de la trame" <<endl; 
+
+     using namespace std;
+
+   
+    
+    // creating stringstream object ss
+    stringstream ss;
+    
+     int num;
+  
+    // assigning the value of num to ss
+    ss  << nbOctetImage;
+    
+    ss >> num;
+    
+    cout << num << endl;
+  
+    // initializing string variable with the value of ss
+    // and converting it to string format with str() function
+   
+   cout << num << endl;
+
+   
+   int nombre_de_trames = num/98;
+   cout<<nombre_de_trames<<endl;
+   
+
+    
+    
+    for (int i = 0; i < taille; i++){
+
+        cout << bufferRcpt[i];
+    }
+    cout << endl;
+
+    unsigned int nombre = toto.Read(bufferRcpt, 100);
+    cout << nombre << endl;
+
+    for (int i = 0; i < 100; i++) {
+
+        cout << (int) (unsigned char) bufferRcpt [i];
+
+        cout << endl;
+
+        monTableau[i] = bufferRcpt[i];
+
+
+    }
+    
+   
+    return 0;
+}
