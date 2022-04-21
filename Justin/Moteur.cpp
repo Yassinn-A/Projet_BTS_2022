@@ -45,7 +45,9 @@ void Moteur::orientation(){
                 cout<< "ACapteur 1: "<< lum1<<endl;
                 cout<< "ACapteur 2: "<<lum2<<endl;
                 lum1 = soleil->luminosity1(); //lum1 = valeur capteur 1
+                usleep(10000);
                 lum2 = soleil->luminosity2();//lum2 = valeur capteur 2
+                usleep(10000);
                 cout<< "PCapteur 1: " << lum1<<endl;
                 cout<< "PCapteur 2: "<< lum2<<endl;
             }
@@ -59,8 +61,9 @@ void Moteur::orientation(){
                 cout<< "ACapteur 3: "<< lum1<<endl;
                 cout<< "ACapteur 4: "<<lum2<<endl;
                 lum1 = soleil->luminosity1();
-                usleep(1000);
+                usleep(10000);
                 lum2 = soleil->luminosity2();
+                usleep(10000);
                 cout<< "PCapteur 3: "<< lum1<<endl;
                 cout<< "PCapteur 4: "<<lum2<<endl;
             }
@@ -70,6 +73,12 @@ void Moteur::orientation(){
         luminosite1 = soleil->luminosity1();
         luminosite2 = soleil->luminosity2();
     }
+}
+
+thread Moteur::torientation(){
+    return thread([this]{
+        orientation();
+    });
 }
 
 Moteur::~Moteur() {
