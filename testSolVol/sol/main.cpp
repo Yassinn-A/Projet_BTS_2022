@@ -5,6 +5,7 @@
 #include <iostream>
 #include<string>
 #include<sstream>
+#include <fstream>
 
 using namespace std;
 
@@ -49,31 +50,53 @@ int main() {
     cout << "nombre de trames "<<nombre_de_trames << endl;
     
     int nbr=0;
+    int seuil=0;
     if(reste==true){
         for (int j = 0; j < nombre_de_trames-1; j++){
             unsigned int nombre = toto.Read(bufferRcpt, 100);
-            //for (int i = 0; i < 98; i++) {
-                //monTableau[i] = bufferRcpt[i];
-            //}
-            cout<<"Trame n "<<j+1<<endl;
+            for (int i = 0; i < 98; i++) {
+                monTableau[seuil+i] = bufferRcpt[i];
+                cout<<(int)(unsigned char)monTableau[seuil+i]<<"/";
+                
+            }
+            seuil=seuil+98;
+            cout<<endl<<"Trame n "<<j+1<<endl;
             nbr = j+1;
         }
-        unsigned int nombre = toto.Read(bufferRcpt, 100);
-        //for (int j = 0; j<res;j++) {
-            //monTableau[i] = bufferRcpt[i];
-        //}
-            cout<<"Trame n "<<nbr+1<<endl;
+        unsigned int nombre = toto.Read(bufferRcpt, res+2);
+        for (int j = 0; j<res;j++) {
+            monTableau[seuil+j] = bufferRcpt[j];
+            cout<<(int)(unsigned char)monTableau[seuil+j]<<"/";
+        }
+            cout<<endl<<"Trame n "<<nbr+1<<endl;
     }
     else{
        for (int j = 0; j < nombre_de_trames; j++){
         unsigned int nombre = toto.Read(bufferRcpt, 100);
-        //for (int i = 0; i < 98; i++) {
-            //monTableau[i] = bufferRcpt[i];
-        //}
-        cout<<"Trame n "<<j+1<<endl; 
+        for (int i = 0; i < 98; i++) {
+            monTableau[seuil+i] = bufferRcpt[i];
+            cout<<(int)(unsigned char)monTableau[seuil+i]<<"/";
+        }
+        seuil=seuil+98;
+        cout<<endl<<"Trame n "<<j+1<<endl; 
         }
     }
 
+    ofstream file;
+    
+    file.open("Test.jpeg",ios::out);
+	  if(!file)
+    {
+      cout<<"Erreur fichier.."<<endl;
+      return 0;
+    }
+    cout<<"\nFichier OK !."<<endl;
+
+    file.write(monTableau,num);
+    perror("");
+    file.close();  
+    cout<<"\nFichier sauvé et fermé !."<<endl;
+    
     return 0;
 }
 
