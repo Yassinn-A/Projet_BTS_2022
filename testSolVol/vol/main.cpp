@@ -51,6 +51,9 @@ int main() {
     }
     cout<<"\nFichier OK !."<<endl;
     file.read(monTableau,21349);
+    for(int i = 0; i<21349;i++){
+        cout<<(int)(unsigned char) monTableau[i]<<"/";
+    }
     perror("");
     file.close();  
     cout<<"\nFichier sauvé et fermé !."<<endl;
@@ -68,7 +71,7 @@ int main() {
 
     
     int retour = toto.Open("/dev/ttyUSB1",9600);
-        toto.Write(commande,100); 
+        toto.Write(commande,26); 
     
     int taille =21349;
      
@@ -81,7 +84,7 @@ int main() {
          for (i=indiceEnCours;i<indiceEnCours + 98; i++) {
               trameEmission[i-indiceEnCours]=monTableau[i];
          } // colonne tableau concérnée
-            indiceEnCours = i+1; // incrémentation de la colonne 
+            indiceEnCours = i; // incrémentation de la colonne 
 
             Checksum = 0;
             for ( int j = 0; j < 98; j++) { //
@@ -93,16 +96,19 @@ int main() {
             trameEmission [98] = leChecksum[0]; // la colonne 0 de "lecheksum" correspond a la colonne 98 de "TrameEmission"
             trameEmission [99] = leChecksum[1];// la colonne 1 de "lecheksum" correspond a la colonne 99 de "TrameEmission"
             r++;
-            toto.Write(trameEmission, 100); // l'objet toto envoir trame emission de la taille 100 dans le canal serial
-            cout<<"trame "<<r<<endl;
+            toto.Write(trameEmission, 100);
+            for(int i=0; i<100; i++){
+                cout<<(int)(unsigned char)trameEmission[i]<<"/";
+            }// l'objet toto envoir trame emission de la taille 100 dans le canal serial
+            cout<<endl<<"trame "<<r<<endl;
             usleep(500000);
                                                                            
-        } while (indiceEnCours < taille - 99); // car si la trame est inferieure à 98 c'est la derniere qui est la seule a etre inferieure a 98 et comme taille -1 -98 = 99
+        } while (indiceEnCours < taille - 98); // car si la trame est inferieure à 98 c'est la derniere qui est la seule a etre inferieure a 98 et comme taille -1 -98 = 99
         
         
-        for (i=indiceEnCours; i<taille-1;i++){   
+        for (i=indiceEnCours; i<taille;i++){   
               trameEmission[i-indiceEnCours]=monTableau[i];// colonne tableau concérnée
-                 
+        }     
 
             Checksum = 0;
             for (int i = 0; i < 83; i++) { //
@@ -116,6 +122,6 @@ int main() {
 
         toto.Write(trameEmission, 85); // l'objet toto envoir trame emission de la taille 100 dans le canal serial
 
-    }
+        
     return 0;
 }
