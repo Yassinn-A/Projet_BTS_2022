@@ -67,7 +67,10 @@ public:
     int envoiTableau(const struct sensor_reg reglist[]);
     void lancer_capture();
     int GestionJPEG();
+	int faireMesure(char arg = -1); ////////
+    float* obtenirMesure();////////////
 private:
+    float readbuf[JPEG_BUF_SIZE];
     
 };
 
