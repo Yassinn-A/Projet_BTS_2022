@@ -23,9 +23,8 @@ int main(int argc, char** argv) {
         pugi::xpath_node Secu=doc.select_node("//SegmentVol/Securite");  
         string secuRead=Secu.node().attribute("particules_energie").value();
         if(secuRead==res){
-            DetecteurParticules* test = new DetecteurParticules();
-            test->start();
-            sleep(100);
+            DetecteurParticules* detecteur = new DetecteurParticules();
+            detecteur->start();
         }
     }
     
