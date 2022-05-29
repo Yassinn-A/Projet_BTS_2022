@@ -11,9 +11,7 @@
 #define cppgpio_hpp_AJGSFHGCOJAISLHVZAGJSVBAUKNV
 
 #include "../include/cppgpio/gpio.hpp"
-#include "../include/cppgpio/i2c.hpp"
 #include "../include/cppgpio/buttons.hpp"
-#include "../include/cppgpio/lcd.hpp"
 #include "../include/cppgpio/output.hpp"
 
 
