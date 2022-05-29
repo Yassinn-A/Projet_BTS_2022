@@ -32,7 +32,7 @@ void SegmentVol::orientation(){
 				moteur->tournerD();
 				rotationL = false;
 			}
-		else if ((luminosite1<luminosite2-20) && (!= RotationR)) {
+		else if ((luminosite1<luminosite2-20) && ( !RotationR)) {
 
 				moteur->tournerD();
 				rotationR = true;
