@@ -5,7 +5,6 @@ using namespace std;
 using namespace GPIO;
 
 Moteur::Moteur() {
-    soleil=new Soleil();
 }
 void Moteur::tournerG(){
     direction->on();
