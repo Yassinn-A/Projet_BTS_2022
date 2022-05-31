@@ -16,9 +16,9 @@
 #include "../defs/Protecteur.h"
 using namespace std;
 
-Protecteur::Protecteur(){
+Protecteur::Protecteur(SegmentVol *leSegment){
     
-    leSegment = new SegmentVol();
+    this->leSegment = leSegment;
 }
 
 Protecteur::~Protecteur(){   

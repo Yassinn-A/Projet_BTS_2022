@@ -13,7 +13,7 @@
 
 #include "../defs/DetecteurParticules.h"
 
-DetecteurParticules::DetecteurParticules():InputDetect({24},GPIO::GPIO_EDGE::BOTH){
+DetecteurParticules::DetecteurParticules(SegmentVol *leSegment):InputDetect({24},GPIO::GPIO_EDGE::BOTH),Protecteur(leSegment){
     detected =false;
     
 }
