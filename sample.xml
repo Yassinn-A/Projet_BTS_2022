@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <SegmentVol>
-	<Charge_utile>
-		<Description id="01" type="instrument" role="mesure de lunminosite"/>
+        <Charge_utile>
+                <Description id="01" type="instrument" role="mesure de lunminosite"/>
 
         <!-- Type de l'instrument en 3 caractere-->
         <!-- Signification des elements transmis-->
         <Transmission typ="" signification=""/>
 
-        <!-- Adresse permettant de se connecter a la charge grace a l'i2c--> 
+        <!-- Adresse permettant de se connecter a la charge grace a l'i2c-->
         <Instrument adresse_I2C="0x39"/>
 
         <!-- Precise si un numero de canal est necessaire en offset et si oui son numero-->
         <!-- Nombre de couples (adresse et ordre) pour activer l'instrument-->
-        <Nombre_canal>0<Nombre_canal/>
+        <Nombre_canal>0</Nombre_canal>
         <Canal numero_canal="0"/>
 
         <!-- Adresse et registre permettant d'activer l'instrument-->
         <!-- Nombre de couples (adresse et ordre) pour activer l'instrument-->
-        <Nombre_activation>1<Nombre_activation/>
+        <Nombre_activation>1</Nombre_activation>
         <Activation adresse="" ordre=""/>
 
         <!-- Adresse et registre permettant de desactiver l'instrument-->
         <!-- Nombre de couples (adresse et ordre) pour activer l'instrument-->
-        <Nombre_desactivation>1<Nombre_desactivation/>
+        <Nombre_desactivation>1</Nombre_desactivation>
         <Desactivation adresse="" ordre=""/>
 
         <!-- Adresse et registre permettant de mettre au repos de l'instrunment-->
-        <Nombre_repos>1<Nombre_repos/>
+        <Nombre_repos>1</Nombre_repos>
         <Repos adresse="" ordre=""/>
 
-        <!-- Adresse et registre permettant d'executer l'action souhaitee--> 
-        <Nombre_realisation>1<Nombre_realisation/>
+        <!-- Adresse et registre permettant d'executer l'action souhaitee-->
+        <Nombre_realisation>1</Nombre_realisation>
         <Realisation adresse="" ordre=""/>
-        
-        <!-- Adresse permettant de recuperer les donnees--> 
+
+        <!-- Adresse permettant de recuperer les donnees-->
         <!-- Nombre de donnees a recuperer-->
         <Nombre_recuperation>4</Nombre_recuperation>
         <Recuperation adresse=""/>
-  
-	</Charge_utile>
-    <Securite mode_survie="on" particules_energie="off" />
+
+        </Charge_utile>
+    <Securite mode_survie="on/off" particules_energie="on" />
 </SegmentVol>
