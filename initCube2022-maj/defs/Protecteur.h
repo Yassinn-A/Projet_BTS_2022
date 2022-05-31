@@ -19,15 +19,15 @@ using namespace std;
 
 class SegmentVol;
 
-class Protecteur{
+class Protecteur {
 public:
-    Protecteur();
+    Protecteur(SegmentVol *leSegment);
     virtual ~Protecteur();
     void rebootSave();
     SegmentVol* leSegment;
 
 private:
-    
+
 };
 
 #endif /* PROTECTEUR_H */

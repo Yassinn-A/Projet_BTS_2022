@@ -18,7 +18,7 @@
 
 class DetecteurParticules : public Protecteur, public GPIO::InputDetect{
 public:
-    DetecteurParticules();
+    DetecteurParticules(SegmentVol *leSegment);
     virtual ~DetecteurParticules();
     void triggered(unsigned int gpio);
 private:
