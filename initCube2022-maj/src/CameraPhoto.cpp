@@ -248,3 +248,12 @@ char CameraPhoto::getPhoto(char photo[JPEG_BUF_SIZE]) {
 int CameraPhoto::getTaille() {
     return taille;
 }
+int CameraPhoto::faireMesure(char arg){
+    this->prendrePhoto();
+}
+float* CameraPhoto::obtenirMesure(){
+    float *laTaille;
+    *laTaille = (float) taille;
+    return laTaille;
+    
+    }
