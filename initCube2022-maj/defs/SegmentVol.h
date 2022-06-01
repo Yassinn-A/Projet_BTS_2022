@@ -9,6 +9,7 @@
  * Author: snir2g1
  *
  * Created on 21 mars 2019, 16:25
+ * Modified on avril 2022
  */
 
 #ifndef SEGMENTVOL_H
