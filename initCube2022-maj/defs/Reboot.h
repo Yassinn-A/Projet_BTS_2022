@@ -32,9 +32,12 @@ public:
     void setNumber(int anumber);
 	void resetStatus();
     void systemeReboot();
+    void setTransmit(bool trans);
+    bool getTransmit();
 private:
     string dateHour;
     int number;
+    bool transmit;
 };
 
 #endif /* REBOOT_H */
