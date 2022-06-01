@@ -24,6 +24,10 @@ Mesure::Mesure(float valeur){
     value = valeur;
 }
 
+Mesure::Mesure(char valeur){
+    valuec = valeur;
+}
+
 void Mesure::setDateHour(string dateHour) {
     this->dateHour = dateHour;
 }
@@ -31,6 +35,10 @@ void Mesure::setDateHour(string dateHour) {
 string Mesure::getUnite() {
     return unit;
 } 
+
+void Mesure::setUnite(string theUnit){
+	unit = theUnit;
+}
 
 string Mesure::getDateHour() {
     return dateHour;
@@ -40,3 +48,16 @@ float Mesure::getMesure() {
     return value;
 }
 
+char Mesure::getMesureC() {
+    return valuec;
+}
+
+/// <summary> Cette méthode permet de recuperer la list de valeurs associée à une mesure de capteur.
+/// </summary>
+list<char>  Mesure::getDataListC(){
+	return dataList;
+}
+
+void Mesure::addData(char aData){
+	dataList.push_back (aData);
+}
