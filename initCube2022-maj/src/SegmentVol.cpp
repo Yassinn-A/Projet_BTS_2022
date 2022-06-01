@@ -69,13 +69,15 @@ void SegmentVol::orientation(){
 }
 
 void SegmentVol::lancement(){
-    batterie->obtenirStatus();
-    batterie->getChargingLevel();
-    if((int)batterie->getChargingLevel()<=30){
-        orientation();
-    }
-    else{
-        moteur->eteindre();
+    while(1==1){
+        batterie->obtenirStatus();
+        batterie->getChargingLevel();
+        if((int)batterie->getChargingLevel()<=30){
+            orientation();
+        }
+        else{
+            moteur->eteindre();
+        }
     }
 }
 
