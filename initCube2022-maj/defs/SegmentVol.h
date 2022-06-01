@@ -45,6 +45,8 @@
 #include <ratio>
 #include <chrono>
 #include "Protecteur.h"
+#include "../defs/Soleil.h"
+#include "../defs/Moteur.h"
 using namespace tinyxml2;
 using namespace std;
 
@@ -113,6 +115,8 @@ private:
     Etat* etat;
     PowerControler* powerControler;
     bool etatThread;
+	Soleil* soleil;
+    Moteur* moteur;
 };
 
 #endif /* SEGMENTVOL_H */
