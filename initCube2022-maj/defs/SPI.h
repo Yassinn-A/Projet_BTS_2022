@@ -9,6 +9,7 @@
  * Author: linux
  *
  * Created on 25 mars 2020, 23:05
+ * Modified on avril 2022
  */
 
 #ifndef SPI_H
@@ -23,7 +24,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
-#define JPEG_BUF_SIZE 640*480
+
 
 class CameraPhoto;
 
@@ -38,9 +39,6 @@ public:
     int fermerPortSpi(int spi_device);
     int ecrireSpi(int spi_device,uint8_t CMD[2],int Length);
     int lireSpi(int spi_device,uint8_t CMD[1],uint8_t FLAG[1],int Length);
-    void verifSpi();
-    void RecuperationIMG();
-    char readbuf[JPEG_BUF_SIZE];
     //uint8_t CMD[6];
 private:
     int spi_cs0_fd;	//file descriptor for the SPI device			//file descriptor for the SPI device
