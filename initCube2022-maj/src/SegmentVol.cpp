@@ -31,8 +31,6 @@ void SegmentVol::orientation(){
 				rotationL = true;
 				rotationR=false;
 				while(luminosite1>luminosite2+20) {
-					cout<< "PCapteur 1: " << luminosite1<<endl;
-					cout<< "PCapteur 2: "<< luminosite2<<endl;
 					luminosite1 = soleil->luminosity1();//lum1 = valeur capteur 1
 					usleep(10000);
 					luminosite2 = soleil->luminosity2();//lum2 = valeur capteur 2
@@ -47,8 +45,6 @@ void SegmentVol::orientation(){
 				rotationR = true;
 				rotationL = false;
 				while(luminosite1<luminosite2-20 ){
-					cout<< "ACapteur 3: "<< luminosite1<<endl;
-					cout<< "ACapteur 4: "<<luminosite2<<endl;
 					luminosite1 = soleil->luminosity1();
 					usleep(10000);
 					luminosite2 = soleil->luminosity2();
