@@ -75,7 +75,6 @@ thread SegmentSol::tActiverReception() {
 }
 
 void SegmentSol::envoyerStatus(list<string> status) {
-
     serialib LS;
     int Ret;
 	bool argumentsOK=true;
@@ -151,7 +150,8 @@ void SegmentSol::envoyerStatus(list<string> status) {
             }
 			else if (*it == TypeAppareil::REBOOT) {
 				message->setReboot(leSegment->getOrdinateur()->getReboot());
-				if (message->getTemperatureCube() =="0") nbrePaquets++;
+                                leSegment->getOrdinateur()->getReboot()->setTransmit(true);
+				nbrePaquets++;
             }
 			else {
 				argumentsOK=false;

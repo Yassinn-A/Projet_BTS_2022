@@ -18,7 +18,7 @@ int FrameManager::pause = 1000;
 
 FrameManager::FrameManager() {
     commande = new Commande();
-	this->message = new Message();
+    this->message = new Message();
 }
 
 FrameManager::FrameManager(const FrameManager& orig) {
@@ -46,49 +46,45 @@ void FrameManager::setTableau(char laDataRecu[100]) {
 }
 
 void FrameManager::calculerChecksum(char trame[104], char & PF, char & pf) {
-  short Checksum = 0;
-  char leChecksum[2];
+    short Checksum = 0;
+    char leChecksum[2];
 
-  for (int i = 0; i < trame[1] + 2; i++) {
-      Checksum = Checksum^trame[i];
-  }
-  sprintf(leChecksum, "%2X", Checksum);
-  if (leChecksum[0] == 32) leChecksum[0] = '0';
-  if (leChecksum[1] == 32) leChecksum[1] = '0';
-  PF = leChecksum[0];
-  pf = leChecksum[1];
+    for (int i = 0; i < trame[1] + 2; i++) {
+        Checksum = Checksum^trame[i];
+    }
+    sprintf(leChecksum, "%2X", Checksum);
+    if (leChecksum[0] == 32) leChecksum[0] = '0';
+    if (leChecksum[1] == 32) leChecksum[1] = '0';
+    PF = leChecksum[0];
+    pf = leChecksum[1];
 
 }
 
-
-
-void FrameManager::ajouter_cmd_queue(char reception[]){
-  q.push(new char [100]); //ca marche //Crée un tableau de char sans nom dans la prochaine case de la queue
-  //Remplissage des cases de la dernière commande de la file d'attennte par le contenu de tableau
-  for (int i = 0; i < 100; i++) {
-      q.back()[i] = reception [i];
-  }
-  sem_post(&sync);
+void FrameManager::ajouter_cmd_queue(char reception[]) {
+    q.push(new char [100]); //ca marche //Crée un tableau de char sans nom dans la prochaine case de la queue
+    //Remplissage des cases de la dernière commande de la file d'attennte par le contenu de tableau
+    for (int i = 0; i < 100; i++) {
+        q.back()[i] = reception [i];
+    }
+    sem_post(&sync);
 }
-
 
 void FrameManager::detramerCommande() {
 
-  extrairenbOctectsDataRecu(trameAtraiter);
-  vector <char> commandePDU(0);
-  for (int i = 2; i < commande->getnbOctectsDataRecu()+2; i++) {
-      commandePDU.push_back(trameAtraiter[i]);
-  }
-  extraireCommande(commandePDU);
-  extraireParametres(commandePDU);
+    extrairenbOctectsDataRecu(trameAtraiter);
+    vector <char> commandePDU(0);
+    for (int i = 2; i < commande->getnbOctectsDataRecu() + 2; i++) {
+        commandePDU.push_back(trameAtraiter[i]);
+    }
+    extraireCommande(commandePDU);
+    extraireParametres(commandePDU);
 
 }
 
-
 void FrameManager::extrairenbOctectsDataRecu(char reception[]) {
 
-  int nbdata = (int) reception[1];
-  commande->setnbOctectsDataRecu(nbdata);
+    int nbdata = (int) reception[1];
+    commande->setnbOctectsDataRecu(nbdata);
 }
 
 void FrameManager::extraireCommande(vector <char> trame) {
@@ -119,8 +115,8 @@ void FrameManager::extraireCommande(vector <char> trame) {
 
 void FrameManager::extraireParametres(vector <char> trame) {
 
-     //vector <char>trame;
-    size_t found, found2 ;
+    //vector <char>trame;
+    size_t found, found2;
 
 
     /*for (int i = 0; i <= reception[1]+2; i++) {
@@ -128,231 +124,221 @@ void FrameManager::extraireParametres(vector <char> trame) {
 
     }*/
 
-     list<string> parametres;
-     list<string> paramValeurs;
-     vector<char>::iterator it = trame.begin();
+    list<string> parametres;
+    list<string> paramValeurs;
+    vector<char>::iterator it = trame.begin();
 
-     string arg="";
-     char elem ='-';
+    string arg = "";
+    char elem = '-';
 
 
-     if(it!=trame.end()){
+    if (it != trame.end()) {
 
-        for(it = trame.begin();it!=trame.end();++it){
+        for (it = trame.begin(); it != trame.end(); ++it) {
 
-        if (*it==elem){
-          arg=elem;
-        do
-        {
-                it++;
-            arg=arg+*(it);
+            if (*it == elem) {
+                arg = elem;
+                do {
+                    it++;
+                    arg = arg + *(it);
+                } while ((*(it + 1) != elem) &&(it != trame.end() - 1));
+
+                parametres.push_back(arg);
+                arg = "";
+
+            }
         }
-        while((*(it+1)!=elem) &&(it!=trame.end()-1)) ;
+        if (commande->getCode() == TypeCommande::MISSION) {
+            list<string>::iterator it2;
+            for (it2 = parametres.begin(); it2 != parametres.end(); ++it2) {
+                found = ((string) * it2).find(TypeMisEtat::PERIOD);
 
-          parametres.push_back(arg);
-          arg="";
+                if (found != std::string::npos)
+ {
+                    paramValeurs.push_back(TypeMisEtat::PERIOD);
+                    paramValeurs.push_back(((string) * it2).substr(found + TypeMisEtat::PERIOD.length(), ((string) * it2).size()));
 
+                } else {
+                    found = ((string) * it2).find(TypeMisEtat::DURATION);
+                    found2 = ((string) * it2).find(TypeMisEtat::DATETIME);
+                    if ((found != std::string::npos) && (found != found2))
+ {
+                        paramValeurs.push_back(TypeMisEtat::DURATION);
+                        paramValeurs.push_back(((string) * it2).substr(found + TypeMisEtat::DURATION.length(), ((string) * it2).size()));
+
+                    } else {
+                        found = ((string) * it2).find(TypeMisEtat::DATETIME);
+                        if (found != std::string::npos)
+ {
+                            paramValeurs.push_back(TypeMisEtat::DATETIME);
+                            paramValeurs.push_back(((string) * it2).substr(found + TypeMisEtat::DATETIME.length(), ((string) * it2).size()));
+
+                        } else {
+                            paramValeurs.push_back((string) * it2);
+                        }
+                    }
+                }
+            }
+
+
+            commande->setParametres(paramValeurs);
+        } else {
+            commande->setParametres(parametres);
         }
-       }
-        if(commande->getCode()== TypeCommande::MISSION){
-		list<string>::iterator it2;
-		for (it2 = parametres.begin(); it2 != parametres.end(); ++it2)
-	 	{
-			found = ((string)*it2).find(TypeMisEtat::PERIOD);
-
-			if (found!=std::string::npos)
-
-			{
-				paramValeurs.push_back(TypeMisEtat::PERIOD);
-				paramValeurs.push_back(((string)*it2).substr(found+TypeMisEtat::PERIOD.length(), ((string)*it2).size()));
-
-			}
-			else {
-				found = ((string)*it2).find(TypeMisEtat::DURATION);
-				found2= ((string)*it2).find(TypeMisEtat::DATETIME);
-				if ((found!=std::string::npos) && (found!=found2))
-
-				{
-					paramValeurs.push_back(TypeMisEtat::DURATION);
-					paramValeurs.push_back(((string)*it2).substr(found+TypeMisEtat::DURATION.length(), ((string)*it2).size()));
-
-				}
-				else {
-					found= ((string)*it2).find(TypeMisEtat::DATETIME);
-					if (found!=std::string::npos)
-
-					{
-						paramValeurs.push_back(TypeMisEtat::DATETIME);
-						paramValeurs.push_back(((string)*it2).substr(found+TypeMisEtat::DATETIME.length(), ((string)*it2).size()));
-
-					}
-					else {
-						paramValeurs.push_back((string)*it2);
-					}
-				}
-			}
-		}
-
-
-	commande->setParametres(paramValeurs);
-        }
-        else {
-	commande->setParametres(parametres);
-	}
-     }
+    }
 
 }
 
 bool FrameManager::verifierChecksum() {
-  char PF;
-  char pf;
-  char cheksumRecuPF, cheksumRecupf;
-  cheksumRecuPF = trameReception[trameReception[1] + 2];
-  cheksumRecupf = trameReception[trameReception[1] + 3];
-  calculerChecksum(trameReception, PF, pf);
-  if ((cheksumRecuPF != PF) || (cheksumRecupf != pf)) return false;
-  else return true;
+    char PF;
+    char pf;
+    char cheksumRecuPF, cheksumRecupf;
+    cheksumRecuPF = trameReception[trameReception[1] + 2];
+    cheksumRecupf = trameReception[trameReception[1] + 3];
+    calculerChecksum(trameReception, PF, pf);
+    if ((cheksumRecuPF != PF) || (cheksumRecupf != pf)) return false;
+    else return true;
 }
 
 unsigned char FrameManager::calculerNombrePaquets(Message * message) {
-  list<Mesure*> listeDeMesures = message->getMesures();
-     int nbreTotalMesures = listeDeMesures.size();
-     if (message->getTypeMission() == TypeMisEtat::TEMPCELSIUS) {
- this->nbrePaquets = nbreTotalMesures / 2 + nbreTotalMesures%2; ///////////////////////////////////////
-     }
-     return nbrePaquets;
- }
+    list<Mesure*> listeDeMesures = message->getMesures();
+    int nbreTotalMesures = listeDeMesures.size();
+    if (message->getTypeMission() == TypeMisEtat::TEMPCELSIUS) {
+        this->nbrePaquets = nbreTotalMesures / 2 + nbreTotalMesures % 2; ///////////////////////////////////////
+    }
+    return nbrePaquets;
+}
 
 /**
  *  /~/id/nbre octets/"MISSION"/nbrepaquets/numPaquet/ Ttemp1/ -DTdate1/ Ttemp2/ -DTdate2/CheksumPF/cheksumpf
  *
  */
 void FrameManager::tramerMission(Message* message, int nbrePaquets, int numPaquet) {
-  char tab[20] = {};
-  char PF;
-  char pf;
+    char tab[20] = {};
+    char PF;
+    char pf;
 
 
-  unsigned int j;
+    unsigned int j;
 
-  Mesure *lamesure;
-  list<Mesure*> laListe;
-  list<Mesure*>::iterator lIndice;
-  string valeurMesure, dateHour;
-  stringstream stream;
+    Mesure *lamesure;
+    list<Mesure*> laListe;
+    list<Mesure*>::iterator lIndice;
+    string valeurMesure, dateHour;
+    stringstream stream;
 
-  //trameEmission[0] = '~';
-  trameEmission[0] = message->getIdSegment();
-  trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
-  strcpy(tab, TypeCommande::MISSION.c_str());
-  for (j = 0; j < TypeCommande::MISSION.size(); j++) {
-      trameEmission[2 + j] = tab[j];
-  }
+    //trameEmission[0] = '~';
+    trameEmission[0] = message->getIdSegment();
+    trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
+    strcpy(tab, TypeCommande::MISSION.c_str());
+    for (j = 0; j < TypeCommande::MISSION.size(); j++) {
+        trameEmission[2 + j] = tab[j];
+    }
 
-  j = j + 2;
+    j = j + 2;
 
-  trameEmission[j] = nbrePaquets;
-  j++;
-  trameEmission[j] = numPaquet;
-  j++;
+    trameEmission[j] = nbrePaquets;
+    j++;
+    trameEmission[j] = numPaquet;
+    j++;
 
-  strcpy(tab, message->getTypeMission().c_str());
+    strcpy(tab, message->getTypeMission().c_str());
 
-  for (unsigned int k = 0; k < message->getTypeMission().size(); k++) {
-      trameEmission[j] = tab[k];
-      j++;
-  }
+    for (unsigned int k = 0; k < message->getTypeMission().size(); k++) {
+        trameEmission[j] = tab[k];
+        j++;
+    }
 
-  //Pour cet incr�ment, seule la mission temp�rature peut �tre lanc�e
-  if (message->getTypeMission() == TypeMisEtat::TEMPCELSIUS) {
-      laListe = message->getMesures();
+    //Pour cet incr�ment, seule la mission temp�rature peut �tre lanc�e
+    if (message->getTypeMission() == TypeMisEtat::TEMPCELSIUS) {
+        laListe = message->getMesures();
 
-      /*************** Traitement de la premi�re donn�e ********************/
-      trameEmission[j] = ' ';
-      j++;
-      strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
-      for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
+        /*************** Traitement de la premi�re donn�e ********************/
+        trameEmission[j] = ' ';
+        j++;
+        strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
+        for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
+            trameEmission[j] = tab[k];
+            j++;
+        }
 
-      lIndice = laListe.begin();
-      lamesure = *lIndice; //On met dans la variable lamesure le contenu de l'it�rateur
-      stream << fixed << setprecision(1) << lamesure->getMesure();
-      valeurMesure = stream.str();
-      strcpy(tab, valeurMesure.c_str());
-      for (unsigned int k = 0; k < valeurMesure.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
-      trameEmission[j] = ' ';
-      j++;
-      strcpy(tab, TypeMisEtat::DATETIME.c_str());
-      for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
-      dateHour = lamesure->getDateHour();
-      strcpy(tab, dateHour.c_str());
-      for (unsigned int k = 0; k < dateHour.size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
-      laListe.pop_front(); //On supprime la donn�e trait�e
+        lIndice = laListe.begin();
+        lamesure = *lIndice; //On met dans la variable lamesure le contenu de l'it�rateur
+        stream << fixed << setprecision(1) << lamesure->getMesure();
+        valeurMesure = stream.str();
+        strcpy(tab, valeurMesure.c_str());
+        for (unsigned int k = 0; k < valeurMesure.size(); k++) {
+            trameEmission[j] = tab[k];
+            j++;
+        }
+        trameEmission[j] = ' ';
+        j++;
+        strcpy(tab, TypeMisEtat::DATETIME.c_str());
+        for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+            trameEmission[j] = tab[k];
+            j++;
+        }
+        dateHour = lamesure->getDateHour();
+        strcpy(tab, dateHour.c_str());
+        for (unsigned int k = 0; k < dateHour.size(); k++) {
+            trameEmission[j] = tab[k];
+            j++;
+        }
+        laListe.pop_front(); //On supprime la donn�e trait�e
 
-	if (laListe.empty() == false) {
+        if (laListe.empty() == false) {
 
-		  /*************** Traitement de la deuxi�me donn�e ********************/
-		  trameEmission[j] = ' ';
-		  j++;
-		  strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
-		  for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
-			  trameEmission[j] = tab[k];
-			  j++;
-		  }
+            /*************** Traitement de la deuxi�me donn�e ********************/
+            trameEmission[j] = ' ';
+            j++;
+            strcpy(tab, TypeMisEtat::TEMPERATURE.c_str());
+            for (unsigned int k = 0; k < TypeMisEtat::TEMPERATURE.size(); k++) {
+                trameEmission[j] = tab[k];
+                j++;
+            }
 
-		  lIndice = laListe.begin();
-		  lamesure = *lIndice; //On met dans la variable lamesure le contenu de l'it�rateur
-		  stream.str(""); //On vide le flux
-		  stream << fixed << setprecision(1) << lamesure->getMesure();
-		  valeurMesure = stream.str();
-		  strcpy(tab, valeurMesure.c_str());
-		  for (unsigned int k = 0; k < valeurMesure.size(); k++) {
-			  trameEmission[j] = tab[k];
-			  j++;
-		  }
-		  trameEmission[j] = ' ';
-		  j++;
-		  strcpy(tab, TypeMisEtat::DATETIME.c_str());
-		  for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-			  trameEmission[j] = tab[k];
-			  j++;
-		  }
-		  dateHour = lamesure->getDateHour();
-		  strcpy(tab, dateHour.c_str());
-		  for (unsigned int k = 0; k < dateHour.size(); k++) {
-			  trameEmission[j] = tab[k];
-			  j++;
-		  }
-		  laListe.pop_front();
+            lIndice = laListe.begin();
+            lamesure = *lIndice; //On met dans la variable lamesure le contenu de l'it�rateur
+            stream.str(""); //On vide le flux
+            stream << fixed << setprecision(1) << lamesure->getMesure();
+            valeurMesure = stream.str();
+            strcpy(tab, valeurMesure.c_str());
+            for (unsigned int k = 0; k < valeurMesure.size(); k++) {
+                trameEmission[j] = tab[k];
+                j++;
+            }
+            trameEmission[j] = ' ';
+            j++;
+            strcpy(tab, TypeMisEtat::DATETIME.c_str());
+            for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                trameEmission[j] = tab[k];
+                j++;
+            }
+            dateHour = lamesure->getDateHour();
+            strcpy(tab, dateHour.c_str());
+            for (unsigned int k = 0; k < dateHour.size(); k++) {
+                trameEmission[j] = tab[k];
+                j++;
+            }
+            laListe.pop_front();
 
-		  /** Mise � jour de la liste **/
-		  message->setMesures(laListe);
-	}
-  }
+            /** Mise � jour de la liste **/
+            message->setMesures(laListe);
+        }
+    }
 
-  /** Mise � jour du champ "nombre d'octets" **/
-  trameEmission[1] = j - 2; //ATTENTION A VERIFIER
+    /** Mise � jour du champ "nombre d'octets" **/
+    trameEmission[1] = j - 2; //ATTENTION A VERIFIER
 
-  calculerChecksum(trameEmission,PF, pf);
-  trameEmission[j] = PF;
-  j++;
-  trameEmission[j] = pf;
-  j++;
-  trameEmission[j] = 255;
-  j++;
-  for (j = j; j < 100; j++)
-      trameEmission[j] = 0;
+    calculerChecksum(trameEmission, PF, pf);
+    trameEmission[j] = PF;
+    j++;
+    trameEmission[j] = pf;
+    j++;
+    trameEmission[j] = 255;
+    j++;
+    for (j = j; j < 100; j++)
+        trameEmission[j] = 0;
 
 
 }
@@ -602,229 +588,38 @@ void FrameManager::ajouterStatusCube(Message* amessage, unsigned int &aposition)
  *
  */
 void FrameManager::tramerStatus(Message* message, int nbrePaquets, int numPaquet) {
-  char tab[20] = {};
-      char PF;
-      char pf;
-      unsigned int j;
+    char tab[20] = {};
+    char PF;
+    char pf;
+    unsigned int j;
 
-      string valeurMesure, dateHour;
-      stringstream stream;
+    string valeurMesure, dateHour;
+    stringstream stream;
 
-  //    trameEmission[0] = '~';
-      trameEmission[0] = message->getIdSegment();
-      trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
-      strcpy(tab, TypeCommande::STATUS.c_str());
-      for (j = 0; j < TypeCommande::STATUS.size(); j++) {
-          trameEmission[2 + j] = tab[j];
-      }
-      j = j + 2;
-      trameEmission[j] = nbrePaquets;
-      j++;
-      trameEmission[j] = numPaquet;
-      j++;
-      if (numPaquet == 1) {
-          ajouterDataOrdiBord(message, j);
-          ajouterDataBattery(message, j);
-      } else {
-          ajouterStatusInst(message, j);
-          ajouterStatusCube(message, j);
-      }
-
-      /** Mise � jour du champ "nombre d'octets" **/
-      trameEmission[1] = j - 2; //ATTENTION A VERIFIER
-
-      calculerChecksum(trameEmission,PF, pf);
-      trameEmission[j] = PF;
-      j++;
-      trameEmission[j] = pf;
-      j++;
-      trameEmission[j] = 255;
-      j++;
-      for (j = j; j < 100; j++)
-          trameEmission[j] = 0;
-
-}
-
-void FrameManager::tramerStatus(Message* message, list<string> appareils, int nbrePaquets, int numPaquet) {
-  char tab[20] = {};
-  char PF;
-  char pf;
-  unsigned int j;
-
-  string valeurMesure, dateHour;
-  stringstream stream;
-
-
-  //trameEmission[0] = '~';
-  trameEmission[0] = message->getIdSegment();
-  trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
-  strcpy(tab, TypeCommande::STATUS.c_str());
-  for (j = 0; j < TypeCommande::STATUS.size(); j++) {
-      trameEmission[2 + j] = tab[j];
-  }
-  j = j + 2;
-  trameEmission[j] = nbrePaquets;
-  j++;
-  trameEmission[j] = numPaquet;
-  j++;
-
-  if (appareils.empty())
-      if (numPaquet == 1) {
-          ajouterDataOrdiBord(message, j);
-          ajouterDataBattery(message, j);
-      } else {
-          ajouterStatusInst(message, j);
-          ajouterStatusCube(message, j);
-      } else {
-      if (numPaquet == 1) {
-          if (message->getMicroSDenMo() != "0") ajouterDataOrdiBord(message, j);
-          else if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
-          else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
-          else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
-          else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
-              strcpy(tab, TypeAppareil::REBOOT.c_str());
-              for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::DATETIME.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, message->getReboot()->getDateHour().c_str());
-              for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-              for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-
-              }
-          }
-      } else if (numPaquet == 2) {
-          if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
-          else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
-          else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
-          else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
-              strcpy(tab, TypeAppareil::REBOOT.c_str());
-              for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::DATETIME.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, message->getReboot()->getDateHour().c_str());
-              for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-              for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-
-              }
-          }
-      } else if (numPaquet == 3) {
-          if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
-          else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
-          else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
-              strcpy(tab, TypeAppareil::REBOOT.c_str());
-              for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::DATETIME.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, message->getReboot()->getDateHour().c_str());
-              for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-              for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-
-              }
-          }
-      } else if (numPaquet == 4) {
-          if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
-          else if ((message->getTemperatureCube() == "0") && (message->getReboot()->getNumber() != 0)) {
-              strcpy(tab, TypeAppareil::REBOOT.c_str());
-              for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::DATETIME.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, message->getReboot()->getDateHour().c_str());
-              for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
-              for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-              }
-
-              strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
-              for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
-                  trameEmission[j] = tab[k];
-                  j++;
-
-              }
-          }
-      }
-	}
+    //    trameEmission[0] = '~';
+    trameEmission[0] = message->getIdSegment();
+    trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
+    strcpy(tab, TypeCommande::STATUS.c_str());
+    for (j = 0; j < TypeCommande::STATUS.size(); j++) {
+        trameEmission[2 + j] = tab[j];
+    }
+    j = j + 2;
+    trameEmission[j] = nbrePaquets;
+    j++;
+    trameEmission[j] = numPaquet;
+    j++;
+    if (numPaquet == 1) {
+        ajouterDataOrdiBord(message, j);
+        ajouterDataBattery(message, j);
+    } else {
+        ajouterStatusInst(message, j);
+        ajouterStatusCube(message, j);
+    }
 
     /** Mise � jour du champ "nombre d'octets" **/
     trameEmission[1] = j - 2; //ATTENTION A VERIFIER
 
-    calculerChecksum(trameEmission,PF, pf);
+    calculerChecksum(trameEmission, PF, pf);
     trameEmission[j] = PF;
     j++;
     trameEmission[j] = pf;
@@ -836,93 +631,286 @@ void FrameManager::tramerStatus(Message* message, list<string> appareils, int nb
 
 }
 
+void FrameManager::tramerStatus(Message* message, list<string> appareils, int nbrePaquets, int numPaquet) {
+    cout<<message->getReboot()->getNumber()<<endl;
+    cout<<message->getReboot()->getDateHour()<<endl;
+    char tab[20] = {};
+    char PF;
+    char pf;
+    unsigned int j;
+
+    string valeurMesure, dateHour;
+    stringstream stream;
+
+
+    //trameEmission[0] = '~';
+    trameEmission[0] = message->getIdSegment();
+    trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
+    strcpy(tab, TypeCommande::STATUS.c_str());
+    for (j = 0; j < TypeCommande::STATUS.size(); j++) {
+        trameEmission[2 + j] = tab[j];
+    }
+    j = j + 2;
+    trameEmission[j] = nbrePaquets;
+    j++;
+    trameEmission[j] = numPaquet;
+    j++;
+
+    if (appareils.empty()) {
+        if (numPaquet == 1) {
+            ajouterDataOrdiBord(message, j);
+            ajouterDataBattery(message, j);
+        } else {
+            ajouterStatusInst(message, j);
+            ajouterStatusCube(message, j);
+        }
+    } else {
+        if (numPaquet == 1) {
+            if (message->getMicroSDenMo() != "0") ajouterDataOrdiBord(message, j);
+            else if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
+            else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
+            else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if (message->getReboot()->getTransmit() != false) {
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+
+                }
+            }
+        } else if (numPaquet == 2) {
+            if (message->getVoltageBat() != "0") ajouterDataBattery(message, j);
+            else if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
+            else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if (message->getReboot()->getTransmit() != false){
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+
+                }
+            }
+        } else if (numPaquet == 3) {
+            if (message->getStatInstrument()->getTemp() != 0) ajouterStatusInst(message, j);
+            else if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if (message->getReboot()->getTransmit() != false) {
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+
+                }
+            }
+        } else if (numPaquet == 4) {
+            if (message->getTemperatureCube() != "0") ajouterStatusCube(message, j);
+            else if (message->getReboot()->getTransmit() != false){
+                strcpy(tab, TypeAppareil::REBOOT.c_str());
+                for (unsigned int k = 0; k < TypeAppareil::REBOOT.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::DATETIME.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::DATETIME.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, message->getReboot()->getDateHour().c_str());
+                for (unsigned int k = 0; k < message->getReboot()->getDateHour().size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, TypeMisEtat::REBOOT_NUMBER.c_str());
+                for (unsigned int k = 0; k < TypeMisEtat::REBOOT_NUMBER.size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+                }
+
+                strcpy(tab, to_string(message->getReboot()->getNumber()).c_str());
+                for (unsigned int k = 0; k < to_string(message->getReboot()->getNumber()).size(); k++) {
+                    trameEmission[j] = tab[k];
+                    j++;
+
+                }
+            }
+        }
+    }
+
+    /** Mise � jour du champ "nombre d'octets" **/
+    trameEmission[1] = j - 2; //ATTENTION A VERIFIER
+
+    calculerChecksum(trameEmission, PF, pf);
+    trameEmission[j] = PF;
+    j++;
+    trameEmission[j] = pf;
+    j++;
+    trameEmission[j] = 255;
+    j++;
+    for (j = j; j < 100; j++)
+        trameEmission[j] = 0;
+
+}
 
 void FrameManager::tramerMesure(Message* message, int nbrePaquets, int numPaquet) {
 
-      list<string>::iterator lIndice;
-      char tab[20] = {};
-      char PF;
-      char pf;
-      unsigned int j = 0, nbrePixels = 0;
+    list<string>::iterator lIndice;
+    char tab[20] = {};
+    char PF;
+    char pf;
+    unsigned int j = 0, nbrePixels = 0;
 
-  //    trameEmission[0] = '~';
-      trameEmission[0] = message->getIdSegment();
-      trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
+    //    trameEmission[0] = '~';
+    trameEmission[0] = message->getIdSegment();
+    trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
 
-      strcpy(tab, TypeCommande::MEASURE.c_str());
-      for (j = 0; j < TypeCommande::MEASURE.size(); j++) {
-          trameEmission[2 + j] = tab[j];
-      }
+    strcpy(tab, TypeCommande::MEASURE.c_str());
+    for (j = 0; j < TypeCommande::MEASURE.size(); j++) {
+        trameEmission[2 + j] = tab[j];
+    }
 
-      j = j + 2;
+    j = j + 2;
 
-      trameEmission[j] = nbrePaquets;
-      j++;
-      trameEmission[j] = numPaquet;
-      j++;
+    trameEmission[j] = nbrePaquets;
+    j++;
+    trameEmission[j] = numPaquet;
+    j++;
 
-      strcpy(tab, message->getTypeMesure().c_str());
+    strcpy(tab, message->getTypeMesure().c_str());
 
-      for (unsigned int k = 0; k < message->getTypeMesure().size(); k++) {
-          trameEmission[j] = tab[k];
-          j++;
-      }
-      if (message->getTypeMesure() == TypeMisEtat::PIXEL) {
-          list<string> lesPixels = message->getPixels();
+    for (unsigned int k = 0; k < message->getTypeMesure().size(); k++) {
+        trameEmission[j] = tab[k];
+        j++;
+    }
+    if (message->getTypeMesure() == TypeMisEtat::PIXEL) {
+        list<string> lesPixels = message->getPixels();
 
-          for (lIndice = lesPixels.begin(); lIndice != lesPixels.end(); lIndice++) {
-              trameEmission[j] = ' ';
-              j++;
-              //cout<< (*lIndice) << " ";
-              strcpy(tab, (*lIndice).c_str());
-              for (unsigned int k = 0; k < (*lIndice).size(); k++) {
-                  trameEmission[j] = tab[k];
+        for (lIndice = lesPixels.begin(); lIndice != lesPixels.end(); lIndice++) {
+            trameEmission[j] = ' ';
+            j++;
+            //cout<< (*lIndice) << " ";
+            strcpy(tab, (*lIndice).c_str());
+            for (unsigned int k = 0; k < (*lIndice).size(); k++) {
+                trameEmission[j] = tab[k];
 
-                  j++;
-              }
-              //lesPixels.erase(lIndice);
+                j++;
+            }
+            //lesPixels.erase(lIndice);
 
-              //--lIndice;
+            //--lIndice;
 
-              nbrePixels = nbrePixels + 1;
+            nbrePixels = nbrePixels + 1;
 
-              if (nbrePixels == 8) break; // sortie tous les 8 pixels.
+            if (nbrePixels == 8) break; // sortie tous les 8 pixels.
 
-          }
-          lIndice++;
-          lesPixels.erase(lesPixels.begin(), lIndice);
-          message->setPixels(lesPixels);
-      } else if (message->getTypeMesure() == TypeMisEtat::TEMPCELSIUS) {
-          list<Mesure*> mesures = message->getMesures();
+        }
+        lIndice++;
+        lesPixels.erase(lesPixels.begin(), lIndice);
+        message->setPixels(lesPixels);
+    } else if (message->getTypeMesure() == TypeMisEtat::TEMPCELSIUS) {
+        list<Mesure*> mesures = message->getMesures();
 
-          float releve = mesures.back()->getMesure();
-          stringstream stream;
-          stream << fixed << setprecision(1) << releve;
+        float releve = mesures.back()->getMesure();
+        stringstream stream;
+        stream << fixed << setprecision(1) << releve;
 
-          strcpy(tab, (stream.str()).c_str());
-          trameEmission[j] = ' ';
-          j++;
-          for (unsigned int k = 0; k < (stream.str()).size(); k++) {
-              trameEmission[j] = tab[k];
-              j++;
-          }
-      }
-      trameEmission[j] = ' ';
+        strcpy(tab, (stream.str()).c_str());
+        trameEmission[j] = ' ';
+        j++;
+        for (unsigned int k = 0; k < (stream.str()).size(); k++) {
+            trameEmission[j] = tab[k];
+            j++;
+        }
+    }
+    trameEmission[j] = ' ';
 
-      j++;
-      trameEmission[1] = j - 2; //ATTENTION A VERIFIER
+    j++;
+    trameEmission[1] = j - 2; //ATTENTION A VERIFIER
 
-      calculerChecksum(trameEmission,PF, pf);
-      trameEmission[j] = PF;
+    calculerChecksum(trameEmission, PF, pf);
+    trameEmission[j] = PF;
 
-      j++;
-      trameEmission[j] = pf;
+    j++;
+    trameEmission[j] = pf;
 
-      j++;
-      trameEmission[j] = 255;
-      j++;
-      for (j = j; j < 100; j++)
-          trameEmission[j] = 0;
+    j++;
+    trameEmission[j] = 255;
+    j++;
+    for (j = j; j < 100; j++)
+        trameEmission[j] = 0;
 }
 
 string FrameManager::extraireTypeMessage(int &pos) {
@@ -995,20 +983,20 @@ void FrameManager::supprimerPaquet() {
 vector<char> FrameManager::tramerRepAcq(Message* message, string ReponseAcquitement) {
 
     vector<char> trameRepAcq(0);
-    int j=0;
+    int j = 0;
     char tableauRepAcq[100];
-	char PF,pf;
-	short Checksum = 0;
+    char PF, pf;
+    short Checksum = 0;
     char leChecksum[2];
 
-	trameRepAcq.push_back( message->getIdSegment());
+    trameRepAcq.push_back(message->getIdSegment());
 
-	strcpy(tableauRepAcq, ReponseAcquitement.c_str());
-    for (j = 0; j < (int)ReponseAcquitement.size(); j++) {
-        trameRepAcq.push_back( tableauRepAcq[j]);
+    strcpy(tableauRepAcq, ReponseAcquitement.c_str());
+    for (j = 0; j < (int) ReponseAcquitement.size(); j++) {
+        trameRepAcq.push_back(tableauRepAcq[j]);
     }
 
-	for (int i = 0; i < (int)trameRepAcq.size(); i++) {
+    for (int i = 0; i < (int) trameRepAcq.size(); i++) {
         Checksum = Checksum^trameRepAcq[i];
     }
     sprintf(leChecksum, "%2X", Checksum);
@@ -1017,9 +1005,9 @@ vector<char> FrameManager::tramerRepAcq(Message* message, string ReponseAcquitem
     PF = leChecksum[0];
     pf = leChecksum[1];
 
-	trameRepAcq.push_back( PF);
-	trameRepAcq.push_back( pf);
-	trameRepAcq.push_back( 255);
-	return trameRepAcq;
+    trameRepAcq.push_back(PF);
+    trameRepAcq.push_back(pf);
+    trameRepAcq.push_back(255);
+    return trameRepAcq;
 
 }

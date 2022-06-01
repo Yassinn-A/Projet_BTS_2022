@@ -16,71 +16,8 @@ SegmentVol::SegmentVol() {
     surveillance = new Surveillance(this);
     sauvegarde = new Sauvegarde();
     powerControler = new PowerControler();
-    soleil = new Soleil();
-    moteur = new Moteur();
     this->intialisationInstrument();
-}
-
-void SegmentVol::orientation(){
-    int luminosite1 = soleil->luminosity1(); //récupère valeur capteur 1
-    int luminosite2 = soleil->luminosity2();//récupère valeur capteur 2
-	bool rotationR=false, rotationL=false;
-
-		if((luminosite1>luminosite2+20 ) && (!rotationL)) {//si capteur 1 > +ou- 20 capteur2
-				moteur->tournerG();
-				rotationL = true;
-				rotationR=false;
-				while(luminosite1>luminosite2+20) {
-					luminosite1 = soleil->luminosity1();//lum1 = valeur capteur 1
-					usleep(10000);
-					luminosite2 = soleil->luminosity2();//lum2 = valeur capteur 2
-
-				}
-				moteur->tournerD();
-				rotationL = false;
-			}
-		else if (luminosite1<luminosite2-20) {
-
-				moteur->tournerD();
-				rotationR = true;
-				rotationL = false;
-				while(luminosite1<luminosite2-20 ){
-					luminosite1 = soleil->luminosity1();
-					usleep(10000);
-					luminosite2 = soleil->luminosity2();
-				}
-				moteur->tournerG();
-				rotationR=false;
-			}
-		else {
-			moteur->eteindre();
-			rotationL = false;
-			rotationR=false;
-		}
-
-        luminosite1 = soleil->luminosity1();
-        luminosite2 = soleil->luminosity2();
-		usleep(500000);
-    
-}
-
-void SegmentVol::lancement(){
-    while(1==1){
-        batterie->obtenirStatus();
-        batterie->getChargingLevel();
-        if((int)batterie->getChargingLevel()<=30){
-            orientation();
-        }
-        else{
-            moteur->eteindre();
-        }
-    }
-}
-
-thread SegmentVol::tlancement(){
-    return thread([this]{
-        lancement();
-    });
+    sauvegarde->chargerContexte(this);
 }
 
 Sauvegarde* SegmentVol::getSave(){
@@ -428,7 +365,7 @@ int SegmentVol::intialisationInstrument() {
 
     //Lecture de l'adresse de l'instrument
     XMLDocument config;
-	XMLError anError = config.LoadFile("../config/initcube.xml");
+	XMLError anError = config.LoadFile("../config/initcube.xml");//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     XMLText* adrNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("adresse")->FirstChild()->ToText();
     adrConfig = adrNode->Value();
     XMLText* typeNode = config.FirstChildElement("initcube")->FirstChildElement("instrument")->FirstChildElement("description")->FirstChildElement("type")->FirstChild()->ToText();
