@@ -18,4 +18,4 @@ private:
     DigitalOut* sleep = new DigitalOut(26);
 };
 
-
+#endif /* MOTEUR_H */
