@@ -60,14 +60,16 @@ void SegmentVol::orientation(){
 }
 
 void SegmentVol::lancement(){
-    batterie->obtenirStatus();
-    batterie->getChargingLevel();
-    cout<< (int)batterie->getChargingLevel()<< " %" << endl;
-    if((int)batterie->getChargingLevel()<=30){
-        orientation();
-    }
-    else{
-        moteur->eteindre();
+    while(1==1){
+        batterie->obtenirStatus();
+        batterie->getChargingLevel();
+        cout<< (int)batterie->getChargingLevel()<< " %" << endl;
+        if((int)batterie->getChargingLevel()<=30){
+            orientation();
+        }
+        else{
+            moteur->eteindre();
+        }
     }
 }
 
