@@ -65,6 +65,9 @@ public:
     void activerInstrument();
     void desactiverInstrument();
     void desactiverModuleEmission();
+	void orientation();
+    void lancement();
+    std::thread tlancement();
 
     void setSegmentSol(SegmentSol* segmentSol) {
         this->segmentSol = segmentSol;
@@ -90,6 +93,7 @@ public:
     int intialisationInstrument();
 	int resetStatus(list<string> appareil);
     Sauvegarde* getSave();
+
 
 
 private:
