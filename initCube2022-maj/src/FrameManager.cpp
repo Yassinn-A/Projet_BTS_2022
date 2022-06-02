@@ -632,8 +632,6 @@ void FrameManager::tramerStatus(Message* message, int nbrePaquets, int numPaquet
 }
 
 void FrameManager::tramerStatus(Message* message, list<string> appareils, int nbrePaquets, int numPaquet) {
-    cout<<message->getReboot()->getNumber()<<endl;
-    cout<<message->getReboot()->getDateHour()<<endl;
     char tab[20] = {};
     char PF;
     char pf;
