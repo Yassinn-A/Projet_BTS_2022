@@ -29,8 +29,9 @@ void Protecteur::rebootSave(){
     //incrementation reboot
     leSegment->getOrdinateur()->getReboot()->setNumber(leSegment->getOrdinateur()->getReboot()->getNumber()+1);
     //maj date du reboot
-    time_t now = time(0);
-    char* date = ctime(&now);
+    string date;
+    leSegment->getHorloge()->lire();
+    date = leSegment->getHorloge()->getDateHeure();
     leSegment->getOrdinateur()->getReboot()->setDateHour(date);
     //sauvegarde infos
     leSegment->getSave()->creerSauvegarde(leSegment);
