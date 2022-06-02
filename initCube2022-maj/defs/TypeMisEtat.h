@@ -19,7 +19,13 @@ class TypeMisEtat
 	 * La grandeur mesurée ou à mesurer est une température.
 	 */
 	public: static string TEMPERATURE;
-	/**
+	
+        /**
+	 * transmission des octets d'une image
+	 */
+	public: static string IMAGE;
+	
+        /**
 	 * Demande ou transmission des pixels d'une image
 	 */
 	public: static string PIXEL;
