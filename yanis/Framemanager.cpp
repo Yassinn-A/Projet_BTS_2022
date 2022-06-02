@@ -96,9 +96,7 @@ void FrameManager::extraireCommande(vector <char> trame) {
     //vector <char> trame(0);
 
     /*for (int i = 0; i <= 104; i++) {
-
         trame.push_back(reception[i]);
-
     }*/
 
     vector<char>::iterator it = trame.begin();
@@ -125,7 +123,6 @@ void FrameManager::extraireParametres(vector <char> trame) {
 
     /*for (int i = 0; i <= reception[1]+2; i++) {
                 trame.push_back(reception[i]);
-
     }*/
 
      list<string> parametres;
@@ -839,15 +836,15 @@ void FrameManager::tramerStatus(Message* message, list<string> appareils, int nb
 
 void FrameManager::tramerMesure(Message* message, int nbrePaquets, int numPaquet) {
 
-    list<string>::iterator lIndice;
-    char tab[20] = {};
-    char PF;
-    char pf;
-    unsigned int j = 0, nbrePixels = 0;
-   
+      list<string>::iterator lIndice;
+      char tab[20] = {};
+      char PF;
+      char pf;
+      unsigned int j = 0, nbrePixels = 0;
 
   //    trameEmission[0] = '~';
-        ; //Valeur provisoire en attendant la fin de construction du message.
+      trameEmission[0] = message->getIdSegment();
+      trameEmission[1] = 98; //Valeur provisoire en attendant la fin de construction du message.
 
       strcpy(tab, TypeCommande::MEASURE.c_str());
       for (j = 0; j < TypeCommande::MEASURE.size(); j++) {
@@ -889,8 +886,8 @@ void FrameManager::tramerMesure(Message* message, int nbrePaquets, int numPaquet
               if (nbrePixels == 8) break; // sortie tous les 8 pixels.
 
           }
-		  lIndice++;
-          lesPixels.erase(lesPixels.begin(), lIndice );
+          lIndice++;
+          lesPixels.erase(lesPixels.begin(), lIndice);
           message->setPixels(lesPixels);
       } else if (message->getTypeMesure() == TypeMisEtat::TEMPCELSIUS) {
           list<Mesure*> mesures = message->getMesures();
@@ -924,6 +921,106 @@ void FrameManager::tramerMesure(Message* message, int nbrePaquets, int numPaquet
       for (j = j; j < 100; j++)
           trameEmission[j] = 0;
 }
+
+void FrameManager::tramerHeader(Message* message, int tailleIMG, int tailleDernTrame){
+    
+     
+    ostringstream valeurAvecTaille;
+    char rest[5];
+    char dest[6];    
+    string lettre; 
+    ostringstream lettreAvecChiffre;
+    
+    lettreAvecChiffre  <<  tailleIMG ;     // ici on transforme taille en lettreAvecChiffre 
+    lettre = lettreAvecChiffre.str(); /
+
+
+    // copie le contenu de lettre dans dest     
+    strcpy(dest, lettre.c_str()); // conersion en string en meme temps de la copie
+    valeurAvecTaille << tailleDernTrame; // 
+    string valeur = valeurAvecTaille.str();
+    
+    strcpy(rest, valeur.c_str());
+    
+    
+    bool finish = false;
+    short Checksum = 0;
+    char leChecksum[2];
+    int indiceEnCours;
+
+    trameEmission[0]= 1;
+    trameEmission[1]= 21;
+    trameEmission[2]= 'M';
+    trameEmission[3]= 'E';
+    trameEmission[4]= 'A';
+    trameEmission[5]= 'S';
+    trameEmission[6]= 'U';
+    trameEmission[7]= 'R';
+    trameEmission[8]= 'E';
+    trameEmission[9]= '-';
+    trameEmission[10]= 'I';
+    trameEmission[11]= 'M';
+    trameEmission[12]= 'G';
+    trameEmission[13]= ' ';
+
+    for (int i = 0; i < lettre.size(); i++) {// letre.size = taille de la chaine de 
+                            //caractere qui correspond a la taille du nombre d'octets de l'image  
+
+        trameEmission[14 + i] = dest[i];// dst correspond a la transformation de lettre qui 
+                            //etait un string en dest qui est maintenant un tableau de char 
+    }
+
+    trameEmission [14 + lettre.size()] = ' ';
+
+    for (int i = 0; i < valeur.size(); i++) {
+
+        trameEmission[14 + lettre.size() + i + 1] = rest[i];//rest[i] correspond a la derniere trame 
+    }
+
+    for (int i = 0; i < trameEmission[1] + 2; i++) {
+        Checksum = Checksum^trameEmission[i];
+    }
+    sprintf(leChecksum, "%2X", Checksum);
+    if (leChecksum[0] == 32) leChecksum[0] = '0';
+    if (leChecksum[1] == 32) leChecksum[1] = '0';
+    trameEmission [14 + lettre.size() + valeur.size() + 2] = leChecksum[0];
+    trameEmission [14 + lettre.size() + valeur.size() + 3] = leChecksum[1];  
+    trameEmission [14 + lettre.size() + valeur.size() + 4] = 255;
+    
+}
+
+
+void FrameManager::tramerIMAGE(Message* message, int numTrame, int& indiceEnCours){
+    int taille =98;
+    char tableauATransmettre[JPEG_BUF_SIZE];
+    list<char> laPhoto = (message->getMesures()).back()->getDataListC();
+    taille = laPhoto.size();
+    int i=0;
+    for (std::list<char>::iterator it=laPhoto.begin(); it != laPhoto.end(); ++it)
+    {
+            tableauATransmettre[i]=*it;
+            i++;
+    }
+ 
+    
+    for (i = indiceEnCours; i < indiceEnCours + 98; i++) {
+            trameEmission[i - indiceEnCours] = tableauATransmettre[i];   // 1er octet de la trame suivante (pour se reperer dans le tableau)
+        } // colonne tableau concérnée
+        indiceEnCours = i ; // incrémentation de la colonne 
+
+        Checksum = 0;
+        for (i = 0; i < 98; i++) { //
+            Checksum = Checksum^trameEmission[i]; // checksum du trameEmission concerné
+        }
+        sprintf(leChecksum, "%2X", Checksum);
+        if (leChecksum[0] == 32) leChecksum[0] = '0'; // si il y a un espace (32 en ascii) il faut le rempalacr par 0
+        if (leChecksum[1] == 32) leChecksum[1] = '0'; // si il y a un espace (32 en ascii) il faut le rempalacr par 0
+        trameEmission [98] = leChecksum[0]; // la colonne 0 de "lecheksum" correspond a la colonne 98 de "TrameEmission"
+        trameEmission [99] = leChecksum[1]; 
+
+    return 0;
+}
+
 
 string FrameManager::extraireTypeMessage(int &pos) {
     string typeMessage = "";
@@ -993,7 +1090,6 @@ void FrameManager::supprimerPaquet() {
 }
 
 vector<char> FrameManager::tramerRepAcq(Message* message, string ReponseAcquitement) {
-
 
     vector<char> trameRepAcq(0);
     int j=0;
