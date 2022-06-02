@@ -18,6 +18,74 @@ SegmentVol::SegmentVol() {
     powerControler = new PowerControler();
     this->intialisationInstrument();
     sauvegarde->chargerContexte(this);
+	soleil = new Soleil();
+    moteur = new Moteur();
+}
+
+void SegmentVol::orientation(){
+    int luminosite1 = soleil->luminosity1(); //récupère valeur capteur 1
+    int luminosite2 = soleil->luminosity2();//récupère valeur capteur 2
+	bool rotationR=false, rotationL=false;
+
+		if((luminosite1>luminosite2+20 ) && (!rotationL)) {//si capteur 1 > +ou- 20 capteur2
+				moteur->tournerG();
+				rotationL = true;
+				rotationR=false;
+				while(luminosite1>luminosite2+20) {
+					luminosite1 = soleil->luminosity1();//lum1 = valeur capteur 1
+					usleep(10000);
+					luminosite2 = soleil->luminosity2();//lum2 = valeur capteur 2
+                                        usleep(10000);
+
+				}
+				moteur->tournerD();
+				rotationL = false;
+			}
+		else if ((luminosite1<luminosite2-20)&& (!rotationR)) {
+
+				moteur->tournerD();
+				rotationR = true;
+				rotationL = false;
+				while(luminosite1<luminosite2-20 ){
+					luminosite1 = soleil->luminosity1();
+					usleep(10000);
+					luminosite2 = soleil->luminosity2();
+                                        usleep(10000);
+				}
+				moteur->tournerG();
+				rotationR=false;
+			}
+		else {
+			moteur->eteindre();
+			rotationL = false;
+			rotationR=false;
+		}
+
+        luminosite1 = soleil->luminosity1();
+        usleep(10000);
+        luminosite2 = soleil->luminosity2();
+		usleep(500000);
+    
+}
+
+void SegmentVol::lancement(){
+    while(1==1){
+        batterie->obtenirStatus();
+        batterie->getChargingLevel();
+        if((int)batterie->getChargingLevel()<=30){
+            orientation();
+            usleep(10000);
+    }
+        else{
+            moteur->eteindre();
+        }
+    }
+}
+
+thread SegmentVol::tlancement(){
+    return thread([this]{
+        lancement();
+    });
 }
 
 Sauvegarde* SegmentVol::getSave(){
