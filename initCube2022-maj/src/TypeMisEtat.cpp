@@ -31,4 +31,4 @@ string TypeMisEtat::VOLTAGE = "-V";
 string TypeMisEtat::AMPERAGE = "-A";
 string TypeMisEtat::LOAD = "-LOAD";
 string TypeMisEtat::REBOOT_NUMBER = "-N";
-string TypeMisEtat::IMAGE = "-IMG"
+string TypeMisEtat::IMAGE = "-IMG";
