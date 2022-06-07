@@ -29,6 +29,7 @@ void SegmentVol::orientation(){
 
 		if((luminosite1>luminosite2+20 ) && (!rotationL)) {//si capteur 1 > +ou- 20 capteur2
 				moteur->tournerG();
+				usleep(10000);
 				rotationL = true;
 				rotationR=false;
 				while(luminosite1>luminosite2+20) {
@@ -39,11 +40,13 @@ void SegmentVol::orientation(){
 
 				}
 				moteur->tournerD();
+				usleep(10000);
 				rotationL = false;
 			}
 		else if ((luminosite1<luminosite2-20)&& (!rotationR)) {
 
 				moteur->tournerD();
+				usleep(10000);
 				rotationR = true;
 				rotationL = false;
 				while(luminosite1<luminosite2-20 ){
@@ -53,6 +56,7 @@ void SegmentVol::orientation(){
                                         usleep(10000);
 				}
 				moteur->tournerG();
+				usleep(10000);
 				rotationR=false;
 			}
 		else {
@@ -72,7 +76,7 @@ void SegmentVol::lancement(){
     while(1==1){
         batterie->obtenirStatus();
         batterie->getChargingLevel();
-        if((int)batterie->getChargingLevel()<=30){
+        if(((int)batterie->getChargingLevel()<=30)&& (batterie->getInCharge()==false)){
             orientation();
             usleep(10000);
     }
