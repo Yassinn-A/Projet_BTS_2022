@@ -334,7 +334,11 @@ void SegmentSol::traiterCommande() {
             leSegment->effectuerMesure(TEMPCELSIUS);
         } else if (mesure.front() == TypeMisEtat::PIXEL) {
             leSegment->effectuerMesure(PIXEL);
-        } else {
+        } 
+	    else if (mesure.front()== TypeMisEtat::IMAGE){
+            leSegment->effectuerMesure(IMAGE);
+        }
+	    else {
 				envoyerInfos("ERROR-E11");
 		}
     } else if (commande->getCode() == TypeCommande::MEETING) {
