@@ -30,6 +30,7 @@ int main(int argc, char** argv) {
         thread t2 = monSeg->tTraiter_cmd_queue();
         segmentVol->configurerRecupEtat(3, appareils);
         thread t3 = segmentVol->recupEtat();
+    segmentVol->tlancement().join();
         t1.join();
         t2.join();
         t3.join();
