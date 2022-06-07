@@ -7,15 +7,15 @@ using namespace GPIO;
 Moteur::Moteur() {
 }
 void Moteur::tournerG(){
+    sleep->on();
     direction->on();
     speed->on(std::chrono::nanoseconds (200000000));
-    sleep->on();
 }
 
 void Moteur::tournerD(){
+    sleep->on();
     direction->off();
     speed->on(std::chrono::nanoseconds (200000000));
-    sleep->on();
 }
 
 void Moteur::veille(){
