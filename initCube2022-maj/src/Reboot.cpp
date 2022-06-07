@@ -22,7 +22,7 @@
 using namespace std;
 
 
-Reboot::Reboot() {
+Reboot::Reboot():transmit(false) {
     dateHour = "0000/00/00 00:00:00";
     
     pugi::xml_document doc;
@@ -71,4 +71,10 @@ void Reboot::resetStatus(){
     number = 0;
 }
 
+void Reboot::setTransmit(bool trans){
+    transmit = trans;
+}
 
+bool Reboot::getTransmit(){
+    return transmit;
+}
