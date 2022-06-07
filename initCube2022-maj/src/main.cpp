@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
             DetecteurParticules* detecteur = new DetecteurParticules(segmentVol);
             detecteur->start();
         }
+    }
 
         thread t2 = monSeg->tTraiter_cmd_queue();
         segmentVol->configurerRecupEtat(3, appareils);
@@ -34,5 +35,5 @@ int main(int argc, char** argv) {
         t3.join();
         return 0;
 
-    }    
+    
 }
