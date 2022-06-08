@@ -16,6 +16,7 @@ int main(int argc, char** argv) {
     SegmentSol* monSeg = new SegmentSol(segmentVol);
     segmentVol->setSegmentSol(monSeg);
     thread t1 = monSeg->tActiverReception();
+    thread t4;
     pugi::xml_document doc;
     if (doc.load_file("../config/sample.xml")) {
         string res = "on";
@@ -26,6 +27,15 @@ int main(int argc, char** argv) {
             detecteur->start();
         }
     }
+    
+    if (doc.load_file("../config/sample.xml")) {
+        string result = "on";
+        pugi::xpath_node Secu = doc.select_node("//SegmentVol/Securite");
+        string secuRead = Secu.node().attribute("mode_survie").value();
+        if (secuRead == result) {
+            t4 = segmentVol->tlancement();
+        }
+    }
 
         thread t2 = monSeg->tTraiter_cmd_queue();
         segmentVol->configurerRecupEtat(3, appareils);
@@ -34,6 +44,7 @@ int main(int argc, char** argv) {
         t1.join();
         t2.join();
         t3.join();
+        t4.join();
         return 0;
 
     
