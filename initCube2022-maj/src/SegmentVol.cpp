@@ -27,12 +27,12 @@ void SegmentVol::orientation(){
     int luminosite2 = soleil->luminosity2();//récupère valeur capteur 2
 	bool rotationR=false, rotationL=false;
 
-		if((luminosite1>luminosite2+20 ) && (!rotationL)) {//si capteur 1 > +ou- 20 capteur2
+		if((luminosite1>luminosite2+5 ) && (!rotationL)) {//si capteur 1 > +ou- 20 capteur2
 				moteur->tournerG();
-				usleep(10000);
+                                usleep(10000);
 				rotationL = true;
 				rotationR=false;
-				while(luminosite1>luminosite2+20) {
+				while(luminosite1>luminosite2+5) {
 					luminosite1 = soleil->luminosity1();//lum1 = valeur capteur 1
 					usleep(10000);
 					luminosite2 = soleil->luminosity2();//lum2 = valeur capteur 2
@@ -40,27 +40,28 @@ void SegmentVol::orientation(){
 
 				}
 				moteur->tournerD();
-				usleep(10000);
+                                usleep(10000);
 				rotationL = false;
 			}
-		else if ((luminosite1<luminosite2-20)&& (!rotationR)) {
+		else if ((luminosite1<luminosite2-5)&& (!rotationR)) {
 
 				moteur->tournerD();
-				usleep(10000);
+                                usleep(10000);
 				rotationR = true;
 				rotationL = false;
-				while(luminosite1<luminosite2-20 ){
+				while(luminosite1<luminosite2-5 ){
 					luminosite1 = soleil->luminosity1();
 					usleep(10000);
 					luminosite2 = soleil->luminosity2();
                                         usleep(10000);
 				}
 				moteur->tournerG();
-				usleep(10000);
+                                usleep(10000);
 				rotationR=false;
 			}
 		else {
 			moteur->eteindre();
+                        usleep(10000);
 			rotationL = false;
 			rotationR=false;
 		}
