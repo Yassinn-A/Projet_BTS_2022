@@ -44,6 +44,18 @@ void I2C::configurerAddrEsclave(int chemin) {
     }
 }
 
+void I2C::setAddrEsclaveByPass(unsigned char addr) {
+    addressBypass = addr;
+}
+
+void I2C::configurerAddrEsclaveByPass(int chemin) {
+    if (ioctl(chemin, I2C_SLAVE, addressBypass) < 0) {
+        openlog("I2C : ", LOG_PID, LOG_LOCAL0);
+        syslog(LOG_ERR, "ioctl");
+        closelog();
+    }
+}
+
 void I2C::setAddrRegistre(unsigned char reg) {
     addrRegistre = reg;
 }
@@ -120,6 +132,7 @@ int I2C::ecrire(char avaleur) {
     fermerAcces(cheminAcces);
     return -1;
 }
+
 int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
     //**************************
     if(nbrRegistre==1){
@@ -161,7 +174,8 @@ int I2C::ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3){
         }
         fermerAcces(cheminAcces);
         return -1;
-    }}
+    }
+}
 
 char* I2C::lireNbr(int nbrRegistre,char* addrRead){
 
@@ -198,4 +212,19 @@ char* I2C::lireNbr(int nbrRegistre,char* addrRead){
         return NULL;
     }
 }
+
+int I2C::setfd(int file_descriptor){
+    fd = file_descriptor;
+}
+
+int I2C::ecrireAdresseRegistre(unsigned char tableau[128], int tailleTableau){
+    write(fd, tableau, tailleTableau);
+}
+
+int I2C::lireRegistre(unsigned char tableau[128], int tailleTableau){
+    read(fd, tableau, tailleTableau);
+}
+
+
+
     
