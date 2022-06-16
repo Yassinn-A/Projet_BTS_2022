@@ -37,6 +37,9 @@ public:
     I2C();
     virtual ~I2C();
     void setAddrEsclave(unsigned char addr);
+    void configurerAddrEsclave(int chemin);
+    void setAddrEsclaveByPass(unsigned char addr);
+    void configurerAddrEsclaveByPass(int chemin);
     void setAddrRegistre(unsigned char reg);
     int ecrire();
     char* lire();
@@ -44,10 +47,14 @@ public:
     char* lireNbr(int nbrRegistre,char* addrRead);
     int ecrire(char avaleur);
     int ecrireNbr(int nbrRegistre,char avaleur,char avaleur2,char avaleur3);
-protected:
     int ouvrirAcces();
-    void configurerAddrEsclave(int chemin);
     void fermerAcces(int chemin);
+    int ecrireAdresseRegistre(unsigned char tableau[128], int tailleTableau);
+    int lireRegistre(unsigned char tableau[128], int tailleTableau);
+    int setfd(int file_descriptor);
+protected:
+    int fd;
+    unsigned char addressBypass;
     unsigned char address;
     unsigned char addrRegistre;
     char valeur[5];
